@@ -1,127 +1,208 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="Email List Pull Application">
-        <meta name="author" content="Mark A. Richman">
-        <link rel="shortcut icon" href="ico/favicon.png">
-        <title>Email List Pull Application</title>
-        <link href="css/bootstrap.min.css" rel="stylesheet">
-        <link href="css/bootstrap-theme.min.css" rel="stylesheet">
-        <link href="css/theme.css" rel="stylesheet">
-        <!--[if lt IE 9]>
-            <script src="js/html5shiv.js"></script>
-            <script src="js/respond.min.js"></script>
-        <![endif]-->
-    </head>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Email List Pull Application">
+<meta name="author" content="Mark A. Richman">
+<link rel="shortcut icon" href="ico/favicon.png">
+<title>Email List Pull Application</title>
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/bootstrap-theme.min.css" rel="stylesheet">
+<link href="css/theme.css" rel="stylesheet">
+<!--[if lt IE 9]>
+  <script src="js/html5shiv.js"></script>
+  <script src="js/respond.min.js"></script>
+<![endif]-->
+</head>
+<body>
+<!-- Fixed navbar -->
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Email List Pull Application</a>
+    </div>
+    <div class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Lists <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+          <li class="dropdown-header">Basic</li>
+          <li><a id="menu-1" href="#house-file-incl-autoship-panel">Entire House File (incl. Autoship Customers)</a></li>
+          <li><a id="menu-2" href="#house-file-no-autoships-panel">Entire House File (No Autoships)</a></li>
+          <li><a id="menu-3" href="#re-engagement-file--panel">Re-engagement File (Non-Autoship Customers idle > 120 days)</a></li>
+          <li><a id="menu-4" href="#autoship-customers-only-panel">Autoship Customers Only</a></li>
+          <li class="divider"></li>
+          <li class="dropdown-header">Advanced</li>
+          <li><a id="menu-5" href="#cat-x-sell-panel">Category Cross-Sell Emails</a></li>
+          <li><a id="menu-6" href="#by-products-purchased-panel">By Product(s) Purchased</a></li>
+        </ul>
+        </li>
+      </ul>
+    </div>
+    <!-- /.nav-collapse -->
+  </div>
+</div>
+<!-- /.navbar -->
+<div class="container theme-showcase">
 
-    <body>
+  <!-- Flash Message -->
+  <div class="alert alert-success">
+    <strong>Complete!</strong> List successfully sent to EmailVision.
+  </div>
 
-    <!-- Fixed navbar -->
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Email List Pull Application</a>
+  <!-- Entire House File (incl. Autoship Customers) Panel -->
+  <div id="house-file-incl-autoship-panel" class="row">
+    <div class="col-md-8">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Entire House File (incl. Autoship Customers)</h3>
         </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Lists <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li class="dropdown-header">Basic</li>
-                <li><a href="#">Entire House File (incl. Autoship Customers)</a></li>
-                <li><a href="#">Entire House File (No Autoships)</a></li>
-                <li><a href="#">Re-engagement File (Non-Autoship Customers idle > 120 days)</a></li>
-                <li><a href="#">Autoship Customers Only</a></li>
-                <li class="divider"></li>
-                <li class="dropdown-header">Advanced</li>
-                <li><a href="#">Category Cross-Sell Emails</a></li>
-                <li><a href="#">By Product(s) Purchased</a></li>
-              </ul>
-            </li>
-          </ul>
-        </div><!-- /.nav-collapse -->
+        <div class="panel-body">
+        TBD
+        </div>
       </div>
-    </div> <!-- /.navbar -->
+    </div>
+    <!-- /.col-md-8 -->
+  </div> <!-- /Entire House File (incl. Autoship Customers) Panel -->
 
-    <div class="container theme-showcase">
-
-        <!-- Flash Message -->
-        <div class="alert alert-success">
-            <strong>Complete!</strong> List successfully sent to EmailVision.
+  <!-- Entire House File (no Autoships) Panel -->
+  <div id="house-file-no-autoships-panel" class="row" style="display: none">
+    <div class="col-md-8">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Entire House File (no Autoships)</h3>
         </div>
-
-        <!-- Panel -->
-        <div class="row">
-            <div class="col-md-8">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Category Cross-Sell Emails</h3>
-                    </div>
-                    <div class="panel-body">
-                        <div style="margin-top: 10px;float:left">
-                            <p>Category to Select:</p>
-                            <select multiple size="20" id="category-list">
-                                <option value="10400">10400 - Flora Source</option>
-                                <option value="10400">10400 - Flora Source</option>
-                                <option value="10400">10400 - Flora Source</option>
-                                <option value="10400">10400 - Flora Source</option>
-                                <option value="10400">10400 - Flora Source</option>
-                                <option value="10400">10400 - Flora Source</option>
-                                <option value="10400">10400 - Flora Source</option>
-                            </select>
-                        </div>
-                        <div style="margin: 80px 20px 0 20px;float:left;height: 200px">
-                            <p><strong>AND</strong></p>
-                        </div>
-                        <div style="margin-top: 10px;float:left">
-                            <p>Product Emails to Suppress from Category:</p>
-                            <select multiple size="20" id="product-list">
-                                <option value="10400">10400 - Flora Source</option>
-                                <option value="10400">10400 - Flora Source</option>
-                                <option value="10400">10400 - Flora Source</option>
-                                <option value="10400">10400 - Flora Source</option>
-                                <option value="10400">10400 - Flora Source</option>
-                                <option value="10400">10400 - Flora Source</option>
-                                <option value="10400">10400 - Flora Source</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div><!-- /.col-sm-4 -->
+        <div class="panel-body">
+        TBD
         </div>
+      </div>
+    </div>
+    <!-- /.col-md-8 -->
+  </div> <!-- / Entire House File (no Autoships) Panel -->
 
-        <!-- Actions -->
-        <p>
-            <button type="button" class="btn btn-default">Generate List</button>
-            <button type="button" class="btn btn-default">View List</button>
-            <button type="button" class="btn btn-default">Send to EmailVision</button>
-        </p>
-
-        <!-- Progress Bar -->
-        <p><strong>Progress</strong></p>
-        <div class="progress">
-            <div class="progress-bar progress-bar-success" role="progressbar"
-                aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"
-                style="width: 40%"></div>
+  <!-- Re-engagement File Panel -->
+  <div id="re-engagement-file--panel" class="row" style="display: none">
+    <div class="col-md-8">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Re-engagement File (Non-Autoship Customers idle > 120 days)</h3>
         </div>
+        <div class="panel-body">
+        TBD
+        </div>
+      </div>
+    </div>
+    <!-- /.col-md-8 -->
+  </div> <!-- / Re-engagement File Panel -->
 
-        <p><strong>Last List Sent: </strong>Mon 11/13/2013 23:22:10 UTC</p>
+  <!-- Autoship Customers Only Panel -->
+  <div id="autoship-customers-only-panel" class="row" style="display: none">
+    <div class="col-md-8">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Autoship Customers Only</h3>
+        </div>
+        <div class="panel-body">
+        TBD
+        </div>
+      </div>
+    </div>
+    <!-- /.col-md-8 -->
+  </div> <!-- / Autoship Customers Only Panel -->
 
+  <!-- Category Cross Sell Panel -->
+  <div id="cat-x-sell-panel" class="row" style="display: none">
+    <div class="col-md-8">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Category Cross-Sell Emails</h3>
+        </div>
+        <div class="panel-body">
+          <div style="margin-top: 10px;float:left">
+            <p>
+              Category to Select:
+            </p>
+            <select multiple size="20" id="category-list">
+              <option value="10400">10400 - Flora Source</option>
+              <option value="10400">10400 - Flora Source</option>
+              <option value="10400">10400 - Flora Source</option>
+              <option value="10400">10400 - Flora Source</option>
+              <option value="10400">10400 - Flora Source</option>
+              <option value="10400">10400 - Flora Source</option>
+              <option value="10400">10400 - Flora Source</option>
+            </select>
+          </div>
+          <div style="margin: 80px 20px 0 20px;float:left;height: 200px">
+            <p>
+              <strong>AND</strong>
+            </p>
+          </div>
+          <div style="margin-top: 10px;float:left">
+            <p>
+              Product Emails to Suppress from Category:
+            </p>
+            <select multiple size="20" id="product-list">
+              <option value="10400">10400 - Flora Source</option>
+              <option value="10400">10400 - Flora Source</option>
+              <option value="10400">10400 - Flora Source</option>
+              <option value="10400">10400 - Flora Source</option>
+              <option value="10400">10400 - Flora Source</option>
+              <option value="10400">10400 - Flora Source</option>
+              <option value="10400">10400 - Flora Source</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /.col-md-8 -->
+  </div> <!-- /Category Cross Sell Panel -->
 
-    </div> <!-- /.container -->
+  <!-- By Products Purchased Panel -->
+  <div id="by-products-purchased-panel" class="row" style="display: none">
+    <div class="col-md-8">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">By Products Purchased</h3>
+        </div>
+        <div class="panel-body">
+        TBD
+        </div>
+      </div>
+    </div>
+    <!-- /.col-md-8 -->
+  </div> <!-- / By Products Purchased Panel -->
 
-    <script src="js/jquery.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/holder.js"></script>
-    </body>
+  <!-- Actions -->
+  <p>
+    <button type="button" class="btn btn-default">Generate List</button>
+    <button type="button" class="btn btn-default">View List</button>
+    <button type="button" class="btn btn-default">Send to EmailVision</button>
+  </p>
+  <!-- Progress Bar -->
+  <p>
+    <strong>Progress</strong>
+  </p>
+  <div class="progress">
+    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
+    </div>
+  </div>
+  <p>
+    <strong>Last List Sent: </strong>Mon 11/13/2013 23:22:10 UTC
+  </p>
+</div>
+<!-- /.container -->
+<script src="js/jquery.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/holder.js"></script>
+<script src="js/app.js"></script>
+</body>
 </html>
