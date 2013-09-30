@@ -38,3 +38,14 @@ nosetests.xml
 venv
 *.pyc
 
+# PyCharm
+.idea/.name
+.idea/encodings.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/nhs-listpull.iml
+.idea/scopes/scope_settings.xml
+.idea/other.xml
+.idea/testrunner.xml
+.idea/vcs.xml
+.idea/workspace.xml
