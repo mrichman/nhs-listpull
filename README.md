@@ -8,7 +8,7 @@ Commander which then applies each segment to the proper trigger email.
 Initial Phase of Project
 ------------------------
 
-Mark’s application needs to look at customer order data and discern the
+The application needs to look at customer order data and discern the
 following:
 
 Time To Re-Order Email Pulls
@@ -54,7 +54,7 @@ purchased would then be sent to the Email Vision API for an August
 6<sup>th</sup>):  Jane Brown ordered 3 bottles of Arthrozyme May 1<sup>st</sup>, 
 2013. Jane’s ordered shipped the next day, May 2^nd^, 2013.  95 days from May
 1<sup>st</sup> is August 6<sup>th</sup>, 2013.  This customer’s email address, 
-name, and product purchased would then be sent from [Mark’s program] to the Email
+name, and product purchased would then be sent to the Email
 Vision API for a August 6<sup>th</sup> email send.
 
 ** Example 3
