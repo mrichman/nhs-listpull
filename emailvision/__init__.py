@@ -8,7 +8,7 @@
  \___|_| |_| |_|\__,_|_|_| \_/ |_|___/_|\___/|_| |_|
 
 EmailVision Client Library
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :copyright: (c) 2013 by Mark A. Richman.
 :license: GPL v2, see LICENSE for more details.

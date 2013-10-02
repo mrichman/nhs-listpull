@@ -49,3 +49,5 @@ venv
 .idea/testrunner.xml
 .idea/vcs.xml
 .idea/workspace.xml
+
+.idea/dictionaries/mark_richman.xml
