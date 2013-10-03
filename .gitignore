@@ -38,8 +38,6 @@ nosetests.xml
 venv
 *.pyc
 
-config.ini
-
 # PyCharm
 .idea/.name
 .idea/encodings.xml
