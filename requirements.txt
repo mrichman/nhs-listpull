@@ -1,0 +1,4 @@
+Flask==0.10.1
+poster==0.8.1
+pymssql==2.0.0b1-dev-20130403
+requests==1.2.3

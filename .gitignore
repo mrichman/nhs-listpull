@@ -38,6 +38,8 @@ nosetests.xml
 venv
 *.pyc
 
+config.ini
+
 # PyCharm
 .idea/.name
 .idea/encodings.xml
@@ -49,5 +51,5 @@ venv
 .idea/testrunner.xml
 .idea/vcs.xml
 .idea/workspace.xml
-
 .idea/dictionaries/mark_richman.xml
+.idea/dataSources.ids

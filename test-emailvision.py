@@ -1,90 +1,30 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import base64
-import logging
-import requests
-from urllib import urlencode
-from xml.etree import ElementTree
-import httplib
+import os
 
-httplib.HTTPConnection.debuglevel = 1
-
-logging.basicConfig()
-logging.getLogger().setLevel(logging.DEBUG)
-requests_log = logging.getLogger("requests.packages.urllib3")
-requests_log.setLevel(logging.DEBUG)
-requests_log.propagate = True
-
-URL = "http://p3apic.emv2.com/apibatchmember/services/rest/"
-
-OPEN_URL = URL + "connect/open"
-CLOSE_URL = URL + "connect/close"
-
-credentials = urlencode({"login": LOGIN, "password": PASSWORD, "key": KEY})
-
-# Open API session
-r = requests.get(OPEN_URL + "?" + credentials)
-tree = ElementTree.fromstring(r.content)
-token = tree[0].text
-print("Token: " + token)
-
-with open('/Users/mark.richman/email.csv', 'rb') as fd:
-     b64data = base64.b64encode(fd.read())
-
-files = {'file': ('email.csv', b64data, 'application/octet-stream')}
-
-#files = {'file': ('email.csv',
-#                  open('/Users/mark.richman/email.csv', 'rb').
-#                  read().encode("base64"))}
-
-insert_upload_url = URL + "batchmemberservice/" + token + \
-    "/batchmember/insertUpload"
-
-data = '''<?xml version="1.0" encoding="UTF-8"?>
-<insertUpload>
-    <criteria>LOWER(EMAIL)</criteria>
-    <fileName>email.csv</fileName>
-    <separator>,</separator>
-    <fileEncoding>UTF-8</fileEncoding>
-    <skipFirstLine>false</skipFirstLine>
-    <dateFormat>mm/dd/YYYY</dateFormat>
-    <mapping>
-        <column>
-            <colNum>0</colNum>
-            <fieldName>CUSTNUM</colNum>
-        <column>
-        <column>
-            <colNum>1</colNum>
-            <fieldName>FIRSTNAME</colNum>
-        <column>
-        <column>
-            <colNum>2</colNum>
-            <fieldName>LASTNAME</colNum>
-        <column>
-        <column>
-            <colNum>3</colNum>
-            <fieldName>EMAIL</colNum>
-        <column>
-    </mapping>
-</insertUpload>'''
+from ConfigParser import SafeConfigParser
+from emailvision.restclient import RESTClient
+from mom import MOMClient
 
 
-# Upload file
-try:
-    logging.info("Upload URL: " + insert_upload_url)
-    headers = {'Content-type': 'multipart/form-data'}
-    upload_res = requests.put(insert_upload_url, files=files,
-                              data={'insertUpload': data}, headers=headers)
-    logging.info("Status: " + str(upload_res.status_code))
-    if upload_res.status_code != requests.codes.ok:
-        logging.info("Reason: " + upload_res.reason)
-    else:
-        logging.info("Response: " + upload_res.text)
-except Exception as e:
-    logging.info("Error: " + e.message)
+def main():
+    config_ini = os.path.join(os.path.dirname(__file__), 'config.ini')
+    config = SafeConfigParser()
+    config.read(config_ini)
+    mom_host = config.get("momdb", "host")
+    mom_user = config.get("momdb", "user")
+    mom_password = config.get("momdb", "password")
+    mom_database = config.get("momdb", "db")
+    ev_url = config.get("emailvision", "url")
+    ev_login = config.get("emailvision", "login")
+    ev_password = config.get("emailvision", "password")
+    ev_key = config.get("emailvision", "key")
+    ev = RESTClient(ev_url, ev_login, ev_password, ev_key)
+    mom = MOMClient(mom_host, mom_user, mom_password, mom_database)
+    csv = mom.get_customers()
+    job_id = ev.insert_upload(csv)
+    print("Job ID: " + job_id)
 
-# Close API session
-close_res = requests.get(CLOSE_URL + "/" + token)
-logging.info("Status: " + str(close_res.status_code))
-logging.info("Response: " + close_res.text)
+if __name__ == '__main__':
+    main()
