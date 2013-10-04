@@ -54,3 +54,11 @@ venv
 .idea/dataSources.xml
 
 config.ini
+
+.idea/codeStyleSettings.xml
+
+.idea/inspectionProfiles/Project_Default.xml
+
+.idea/inspectionProfiles/profiles_settings.xml
+
+.idea/sqldialects.xml

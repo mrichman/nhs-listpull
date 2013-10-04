@@ -47,7 +47,7 @@ class MOMClient(object):
         except InterfaceError as error:
             msg = "Error connecting to SQL Server: %s" % error.message
             logging.error(msg)
-            raise Exception(msg)
+            raise
         except Exception as e:
             logging.error(e.message)
             raise
@@ -55,20 +55,23 @@ class MOMClient(object):
     def get_customers(self):
         """
         Get all customers from MOM, including Autoship customers, but excluding
-        opt-outs and Amazon emails. Returns CSV.
+        opt-outs and Amazon emails. Returns CSV and record count
         """
         bio = BytesIO()
+        count = 0
         try:
             conn = self.get_mom_connection()
             cur = conn.cursor()
             logging.info("ListPull_GetAllCustomers")
             cur.execute("exec ListPull_GetAllCustomers")
             data = cur.fetchall()
-            [writer(bio).writerow(row) for row in data]
+            for row in data:
+                writer(bio).writerow(row)
+                count += 1
         except Error as e:
             logging.error(e)
             raise
         except Exception as ex:
             logging.error(ex.message)
             raise
-        return bio.getvalue()
+        return bio.getvalue(), count

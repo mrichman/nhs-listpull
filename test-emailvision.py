@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import os
+import logging
+import httplib
 
 from ConfigParser import SafeConfigParser
 from emailvision.restclient import RESTClient
@@ -9,6 +11,12 @@ from mom import MOMClient
 
 
 def main():
+    httplib.HTTPConnection.debuglevel = 0  # or 1
+    logging.basicConfig()
+    logging.getLogger().setLevel(logging.DEBUG)
+    requests_log = logging.getLogger("requests.packages.urllib3")
+    requests_log.setLevel(logging.ERROR)
+    requests_log.propagate = True
     config_ini = os.path.join(os.path.dirname(__file__), 'config.ini')
     config = SafeConfigParser()
     config.read(config_ini)
