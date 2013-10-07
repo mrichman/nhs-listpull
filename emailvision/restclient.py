@@ -72,10 +72,10 @@ class RESTClient(object):
         dateFormat = et.SubElement(insertUpload, "dateFormat")
         dateFormat.text = 'MM/dd/YYYY'
         mapping = et.SubElement(insertUpload, "mapping")
-        columns = {"0": "CUSTNUM",
-                   "1": "FIRSTNAME",
-                   "2": "LASTNAME",
-                   "3": "EMAIL"}
+        columns = {"0": "EMAIL",
+                   "1": "CUSTNUM",
+                   "2": "FIRSTNAME",
+                   "3": "LASTNAME"}
         for k, v in columns.iteritems():
             column = et.SubElement(mapping, "column")
             colNum = et.SubElement(column, "colNum")
