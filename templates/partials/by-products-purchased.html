@@ -1,0 +1,46 @@
+<!-- By Products Purchased (Time to Reorder) Panel -->
+<div id="by-products-purchased-panel" class="row" style="display: none">
+<div class="col-md-12">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">By Products Purchased (Time to Reorder)</h3>
+    </div>
+    <div class="panel-body">
+      <ul>
+        <li>Does the customer qualify for being sent an email?</li>
+        <li>Does the customer have an email? [If no, disqualify]</li>
+        <li>Is the customer’s email in the Do Not Email list? [If yes, then
+        disqualify]</li>
+        <li>Did the customer’s email come from Amazon.com [If yes, then
+        disqualify]</li>
+        <li>Is the product that the customer ordered an autoship?  [If yes,
+        exclude the autoship product ordered from the logic of this program
+        and put this autoship in the autoship basket.  Keep the non-autoship
+        product in the order remaining in this program]</li>
+        <li>Has the qualified email customer made a purchase within the
+        last 90 days?</li>
+      </ul>
+      If yes, apply the following logic:
+      <ul>
+        <li>How many did the customer order of the same product?</li>
+        <li>When did the order with all of the bottles ship?</li>
+        <li>From the order’s shipment date add 5 days and then IDENTIFY
+        which orders are at the end of use to QUALIFY for the email.</li>
+        <li>See examples in README</li>
+      </ul>
+    </div>
+  </div>
+</div>
+<!-- /.col-md-12 -->
+
+  <!-- Actions -->
+<div class="actions">
+  <form action="{{ url_for('create_list') }}" method=post>
+    <input type="hidden" name="list_type_id" value="1">
+    <button type="submit" class="btn btn-default">Generate List</button>
+  </form>
+</div>
+<!-- /Actions -->
+
+</div>
+<!-- / By Products Purchased (Time to Reorder) Panel -->

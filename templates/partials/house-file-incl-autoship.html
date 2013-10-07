@@ -1,0 +1,28 @@
+<!-- Entire House File (incl. Autoship Customers) Panel -->
+<div id="house-file-incl-autoship-panel" class="row">
+<div class="col-md-12">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Entire House File (incl. Autoship Customers)</h3>
+    </div>
+    <div class="panel-body">
+      <ul>
+        <li>Includes Autoship customers</li>
+        <li>Excludes do-not-email customers</li>
+      </ul>
+    </div>
+  </div>
+</div>
+<!-- /.col-md-12 -->
+
+<!-- Actions -->
+<div class="actions">
+  <form action="{{ url_for('create_list') }}" method=post>
+    <input type="hidden" name="list_type_id" value="1">
+    <button type="submit" class="btn btn-default generate">Generate List</button>
+  </form>
+</div>
+<!-- /Actions -->
+
+</div>
+<!-- /Entire House File (incl. Autoship Customers) Panel -->

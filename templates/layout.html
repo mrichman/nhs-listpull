@@ -6,11 +6,16 @@
 <meta name="description" content="Email List Pull Application">
 <meta name="author" content="Mark A. Richman">
 <title>Email List Pull Application</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-theme.min.css') }}">
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
 <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
 <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">
+<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="{{ url_for('static', filename='js/jquery.blockUI.js') }}"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
 <!--[if lt IE 9]>
 <script src="{{ url_for('static', filename='js/html5shiv.js') }}"></script>
 <script src="{{ url_for('static', filename='js/respond.min.js') }}"></script>
@@ -18,275 +23,34 @@
 </head>
 <body>
 
-<!-- Fixed navbar -->
-<div class="navbar navbar-inverse navbar-fixed-top">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="#">Email List Pull Application</a>
-    </div>
-    <div class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Home</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#contact">Contact</a></li>
-        <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Lists <b class="caret"></b></a>
-        <ul class="dropdown-menu">
-          <li class="dropdown-header">Basic</li>
-          <li><a id="menu-1" href="#house-file-incl-autoship-panel">Entire House File (incl. Autoship Customers)</a></li>
-          <li><a id="menu-2" href="#house-file-no-autoships-panel">Entire House File (No Autoships)</a></li>
-          <li><a id="menu-3" href="#re-engagement-file--panel">Re-engagement File (Non-Autoship Customers idle > 120 days)</a></li>
-          <li><a id="menu-4" href="#autoship-customers-only-panel">Autoship Customers Only</a></li>
-          <li class="divider"></li>
-          <li class="dropdown-header">Advanced</li>
-          <li><a id="menu-5" href="#cat-x-sell-panel">Category Cross-Sell Emails</a></li>
-          <li><a id="menu-6" href="#by-products-purchased-panel">By Product(s) Purchased (Time to Reorder)</a></li>
-        </ul>
-        </li>
-      </ul>
-    </div>
-    <!-- /.nav-collapse -->
-  </div>
-</div>
-<!-- /.navbar -->
+{% include "partials/navbar.html" %}
 
 <div class="container theme-showcase">
 
   <!-- Flash Message -->
   {% for message in get_flashed_messages() %}
-  <div class="alert alert-success">
-    {{ message }}
-  </div>
+    <div class="alert alert-success">
+        {{ message }}
+    </div>
   {% endfor %}
 
-   <!-- Entire House File (incl. Autoship Customers) Panel -->
-  <div id="house-file-incl-autoship-panel" class="row">
-    <div class="col-md-12">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">Entire House File (incl. Autoship Customers)</h3>
-        </div>
-        <div class="panel-body">
-          <ul>
-            <li>Includes Autoship customers</li>
-            <li>Excludes do-not-email customers</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <!-- /.col-md-12 -->
-  </div> <!-- /Entire House File (incl. Autoship Customers) Panel -->
+  {% include "partials/house-file-incl-autoship.html" %}
 
-  <!-- Entire House File (no Autoships) Panel -->
-  <div id="house-file-no-autoships-panel" class="row" style="display: none">
-    <div class="col-md-12">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">Entire House File (no Autoships)</h3>
-        </div>
-        <div class="panel-body">
-          <ul>
-            <li>Excludes Autoship customers with email</li>
-            <li>Excludes people on the most recent do-not-email file</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <!-- /.col-md-12 -->
-  </div> <!-- / Entire House File (no Autoships) Panel -->
+  {% include "partials/house-file-no-autoships.html" %}
 
-  <!-- Re-engagement File Panel -->
-  <div id="re-engagement-file--panel" class="row" style="display: none">
-    <div class="col-md-12">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">Re-engagement File (Non-Autoship Customers idle > 120 days)</h3>
-        </div>
-        <div class="panel-body">
-          <ul>
-            <li>Has the customer not ordered anything 120-days or more and has an
-            Email?  [If yes, they qualify for re-engagement]</li>
-            <li>What product did this customer order last?  [This customer gets
-            segmented into Re-Engagement Email bucket and sub-segmented by last
-            product purchased</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <!-- /.col-md-12 -->
-  </div> <!-- / Re-engagement File Panel -->
+  {% include "partials/re-engagement-file.html" %}
 
-  <!-- Autoship Customers Only Panel -->
-  <div id="autoship-customers-only-panel" class="row" style="display: none">
-    <div class="col-md-8">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">Autoship Customers Only</h3>
-        </div>
-        <div class="panel-body">
-          <ul>
-            <li>What is the product on autoship?</li>
-            <li>When is that product due to ship next?</li>
-            <li>Is the product scheduled to ship in the next seven days?</li>
-            <li><strong>Rule:</strong>  This part of the program is only 
-            concerned with the next Autoship scheduled to ship 7 days out.</li>
-            <li><strong>Strategy:</strong>  If we can identify these Autoships 
-            then we can target them for upsell and cross sell opportunities 
-            before their package ships and then they are guaranteed free 
-            shipping along with getting both products at the same time.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <!-- /.col-md-8 -->
-  </div> <!-- / Autoship Customers Only Panel -->
+  {% include "partials/autoship-customers-only.html" %}
 
-  <!-- Category Cross Sell Panel -->
-  <div id="cat-x-sell-panel" class="row" style="display: none">
-    <div class="col-md-12">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">Category Cross-Sell Emails</h3>
-        </div>
-        <div class="panel-body">
-          <ul>
-            <li>Has the customer ordered in last 48 hours?  [If yes they 
-            qualify]</li>
-            <li>What is the product they ordered?</li>
-            <li>Based on the product they ordered, to what category does it 
-            apply (e.g., Digestive Health, Heart Health, Joint & Muscle 
-            Health, Energy Health)?</li>
-            <li>Include customers who have ordered autoship as we are 
-            identifying what category they belong to for cross-sell</li>
-            <li>Emails are sent to EmailVision by Category Buckets.</li>
-          </ul>
-          <hr>
-          <div style="margin-top: 10px;float:left">
-            <p>
-              Category to Select:
-            </p>
-            <select multiple size="28" id="category-list">
-              <option value="10150">10150 - pharMAX Nerve Pain Relief Cream</option>
-              <option value="10250">10250 - pharMAX Relief: Homeopathic Pain Cream</option>
-              <option value="10311">10311 - 100% New Zealand Colostrum Capsules</option>
-              <option value="10400">10400 - Flora Source Multi Probiotic Capsules</option>
-              <option value="10401">10401 - Flora Source Multi Probiotic Powder</option>
-              <option value="10402">10402 - Probiotic Supplements for Women</option>
-              <option value="10404">10404 - Flora Sinus Seasonal Support</option>
-              <option value="10450">10450 - FloraZyme Digestive Aid</option>
-              <option value="10501">10501 - ArthroZyme Joint &amp; Muscle</option>
-              <option value="10502">10502 - ZymaZorb Digestive Enzymes</option>
-              <option value="10503">10503 - ArthroZyme Plus Joint &amp; Muscle</option>
-              <option value="10805">10805 - Focus Force Memory &amp; Brain Supplements</option>
-              <option value="11406">11406 - Sleep Wave Rest &amp; Relax</option>
-              <option value="11411">11411 - FloraBright Oral Probiotics</option>
-              <option value="11505">11505 - D-Ribose Gold™ Muscle &amp; Energy Support</option>
-              <option value="11506">11506 - D-Ribose GoldM - Muscle &amp; Energy Support</option>
-              <option value="11508">11508 - TruBone Complete - New!</option>
-              <option value="11601">11601 - Memoril Memory &amp; Mood</option>
-              <option value="11703">11703 - NH-D3 Cellular Health Support*</option>
-              <option value="11706">11706 - Nutri-Daily Multivitamin for Men</option>
-              <option value="11707">11707 - Nutri-Daily Multivitamin for Women</option>
-              <option value="11709">11709 - NH-D3 Spray - NEW!</option>
-              <option value="11802">11802 - Advanced Cell Rescue</option>
-              <option value="11805">11805 - Bi-Optium Eye Health</option>
-              <option value="11902">11902 - BG-Cor Advanced Heart Health</option>
-              <option value="11903">11903 - Glucoprotect 6X Blood Sugar Control Supplements</option>
-              <option value="11904">11904 - Advanced-Q CoQ10 with VESIsorb®</option>
-            </select>
-          </div>
-          <div style="margin: 80px 10px 0 10px;float:left;height: 200px">
-            <p>
-              <strong>AND</strong>
-            </p>
-          </div>
-          <div style="margin-top: 10px;float:left">
-            <p>
-              Product Emails to Suppress from Category:
-            </p>
-            <select multiple size="28" id="product-list">
-              <option value="10150">10150 - pharMAX Nerve Pain Relief Cream</option>
-              <option value="10250">10250 - pharMAX Relief: Homeopathic Pain Cream</option>
-              <option value="10311">10311 - 100% New Zealand Colostrum Capsules</option>
-              <option value="10400">10400 - Flora Source Multi Probiotic Capsules</option>
-              <option value="10401">10401 - Flora Source Multi Probiotic Powder</option>
-              <option value="10402">10402 - Probiotic Supplements for Women</option>
-              <option value="10404">10404 - Flora Sinus Seasonal Support</option>
-              <option value="10450">10450 - FloraZyme Digestive Aid</option>
-              <option value="10501">10501 - ArthroZyme Joint &amp; Muscle</option>
-              <option value="10502">10502 - ZymaZorb Digestive Enzymes</option>
-              <option value="10503">10503 - ArthroZyme Plus Joint &amp; Muscle</option>
-              <option value="10805">10805 - Focus Force Memory &amp; Brain Supplements</option>
-              <option value="11406">11406 - Sleep Wave Rest &amp; Relax</option>
-              <option value="11411">11411 - FloraBright Oral Probiotics</option>
-              <option value="11505">11505 - D-Ribose Gold™ Muscle &amp; Energy Support</option>
-              <option value="11506">11506 - D-Ribose GoldM - Muscle &amp; Energy Support</option>
-              <option value="11508">11508 - TruBone Complete - New!</option>
-              <option value="11601">11601 - Memoril Memory &amp; Mood</option>
-              <option value="11703">11703 - NH-D3 Cellular Health Support*</option>
-              <option value="11706">11706 - Nutri-Daily Multivitamin for Men</option>
-              <option value="11707">11707 - Nutri-Daily Multivitamin for Women</option>
-              <option value="11709">11709 - NH-D3 Spray - NEW!</option>
-              <option value="11802">11802 - Advanced Cell Rescue</option>
-              <option value="11805">11805 - Bi-Optium Eye Health</option>
-              <option value="11902">11902 - BG-Cor Advanced Heart Health</option>
-              <option value="11903">11903 - Glucoprotect 6X Blood Sugar Control Supplements</option>
-              <option value="11904">11904 - Advanced-Q CoQ10 with VESIsorb®</option>
-            </select>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- /.col-md-12 -->
-  </div> <!-- /Category Cross Sell Panel -->
+  {% include "partials/cat-x-sell.html" %}
 
-  <!-- By Products Purchased (Time to Reorder) Panel -->
-  <div id="by-products-purchased-panel" class="row" style="display: none">
-    <div class="col-md-8">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">By Products Purchased (Time to Reorder)</h3>
-        </div>
-        <div class="panel-body">
-          <ul>
-            <li>Does the customer qualify for being sent an email?</li>
-            <li>Does the customer have an email? [If no, disqualify]</li>
-            <li>Is the customer’s email in the Do Not Email list? [If yes, then
-            disqualify]</li>
-            <li>Did the customer’s email come from Amazon.com [If yes, then
-            disqualify]</li>
-            <li>Is the product that the customer ordered an autoship?  [If yes,
-            exclude the autoship product ordered from the logic of this program
-            and put this autoship in the autoship basket.  Keep the non-autoship
-            product in the order remaining in this program]</li>
-            <li>Has the qualified email customer made a purchase within the 
-            last 90 days?</li>
-          </ul>
-          If yes, apply the following logic:
-          <ul>
-            <li>How many did the customer order of the same product?</li>
-            <li>When did the order with all of the bottles ship?</li>
-            <li>From the order’s shipment date add 5 days and then IDENTIFY 
-            which orders are at the end of use to QUALIFY for the email.</li>
-            <li>See examples in README</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <!-- /.col-md-8 -->
-  </div> <!-- / By Products Purchased (Time to Reorder) Panel -->
+  {% include "partials/by-products-purchased.html" %}
 
-  <!-- Actions -->
-  <div id="actions" style="margin-bottom: 20px">
-    <form action="{{ url_for('create_list') }}" method=post>
-      <input type="hidden" name="list_type_id" value="1">
-      <button type="submit" class="btn btn-default">Generate List</button>
-    </form>
+  <div id="domMessage" style="display:none;">
+    <img src={{ url_for('static', filename='img/spinner.gif') }}
+    <span>
+      We are processing your request. Please be patient.
+    </span>
   </div>
 
   <!-- Job Status -->
@@ -303,21 +67,14 @@
     </div>
    </div>
 
-    <a href="http://flask.pocoo.org/" target="_blank"><img
-       src="http://flask.pocoo.org/static/badges/made-with-flask-s.png"
-       border="0"
-       alt="made with Flask"
-       title="made with Flask"></a>
+  <a href="http://flask.pocoo.org/" target="_blank">
+    <img src="http://flask.pocoo.org/static/badges/made-with-flask-s.png">
+  </a>
+
 </div>
 <!-- /.container -->
 
-
-
 {% block body %}{% endblock %}
 
-<script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
-<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-<script src="{{ url_for('static', filename='js/holder.js') }}"></script>
-<script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html>

@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import logging
 import os
 import sqlite3
 import StringIO
 import time
 
 from ConfigParser import SafeConfigParser
+from emailvision.restclient import RESTClient
 from flask import Flask, request, g, render_template, flash, send_file
 from mom import MOMClient
 from zlib import compress, decompress
@@ -50,6 +52,7 @@ def get_db():
         g.sqlite_db = connect_db()
     return g.sqlite_db
 
+
 def get_mom():
     """Opens a new MOM db connection if there is none yet for the
     current application context.
@@ -84,10 +87,21 @@ def query_db(query, args=(), one=False):
 def show_jobs():
     app.logger.debug("show_jobs()")
     db = get_db()
-    cur = db.execute('select * from job_status order by id desc')
+    sql = '''
+        select j.id, j.record_count, j.ev_job_id,
+        j.created_at, j.csv, t.name,
+        case
+            when j.status = 0 then 'Pending'
+            when j.status = 1 then 'Complete'
+        end status
+        from job_status j
+        inner join list_types t on (j.list_type_id = t.id)
+        order by j.id desc'''
+    cur = db.execute(sql)
     jobs = cur.fetchall()
     app.logger.debug("Found {} jobs".format(len(jobs)))
-    return render_template('show_entries.html', jobs=jobs)
+    return render_template('job_status.html', jobs=jobs)
+
 
 @app.route('/list', methods=['POST'])
 def create_list():
@@ -96,6 +110,7 @@ def create_list():
     list_type_id = request.form['list_type_id']
     app.logger.debug("list_type_id=" + list_type_id)
     mom = get_mom()
+    app.logger.debug("mom.get_customers()")
     csv, count = mom.get_customers()
     app.logger.debug("CSV is {} bytes".format(len(csv)))
     csv = buffer(compress(csv))
@@ -105,8 +120,9 @@ def create_list():
                '(list_type_id, record_count, status, csv) VALUES (?,?,?,?)'),
                (list_type_id, count, 0, csv))
     db.commit()
-    flash('List successfully generated with {} records'.format(count))
+    flash('List successfully generated with {:,} records'.format(count))
     return show_jobs()
+
 
 @app.route('/csv/<int:job_id>', methods=['GET'])
 def get_csv(job_id):
@@ -122,7 +138,31 @@ def get_csv(job_id):
                      "{}_{}.txt".format(job_id, time.strftime("%Y%m%d%H%M%S")),
                      as_attachment=True)
 
+
+@app.route('/send/<int:job_id>', methods=['GET'])
+def send_to_emailvision(job_id):
+    raise NotImplementedError
+    ##TODO send to emailvision
+    #ev = RESTClient()
+    #csv = None #TODO get csv for job_id
+    #ev_job_id = ev.insert_upload(csv)
+    ##TODO update job_status (ev_job_id) VALUES (ev_job_id) where id = job_id
+    #return render_template('501.html'), 501
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+
+@app.errorhandler(500)
+def internal_error(e):
+    return render_template('500.html'), 500
+
 if __name__ == '__main__':
     app.logger.debug(__name__)
     #init_db()
+    FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    logging.basicConfig(filename='nhs-listpull.log', level=logging.DEBUG,
+                        format=FORMAT)
     app.run()

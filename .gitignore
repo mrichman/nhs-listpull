@@ -39,26 +39,8 @@ venv
 *.pyc
 
 # PyCharm
-.idea/.name
-.idea/encodings.xml
-.idea/misc.xml
-.idea/modules.xml
-.idea/nhs-listpull.iml
-.idea/scopes/scope_settings.xml
-.idea/other.xml
-.idea/testrunner.xml
-.idea/vcs.xml
-.idea/workspace.xml
-.idea/dictionaries/mark_richman.xml
-.idea/dataSources.ids
-.idea/dataSources.xml
+.idea
 
 config.ini
 
-.idea/codeStyleSettings.xml
-
-.idea/inspectionProfiles/Project_Default.xml
-
-.idea/inspectionProfiles/profiles_settings.xml
-
-.idea/sqldialects.xml
+*.log

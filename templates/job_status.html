@@ -6,16 +6,16 @@
         <th>Type</th>
         <th># Records</th>
         <th>Status</th>
-        <th>Date/Time</th>
+        <th>Date/Time (UTC)</th>
         <th>Actions</th>
     </tr>
     {% for job in jobs %}
     <tr class="warning">
         <td>{{ job.id }}</td>
-        <td>Entire House File</td>
-        <td>76,423</td>
-        <td>Pending</td>
-        <td>10/4/2013 14:04:30 UTC</td>
+        <td>{{ job.name }}</td>
+        <td>{{ "{:,}".format(job.record_count) }}</td>
+        <td>{{ job.status }}</td>
+        <td>{{ job.created_at }}</td>
         <td>
             <a class="btn btn-primary btn-xs" href="/csv/{{ job.id }}">
             Download CSV

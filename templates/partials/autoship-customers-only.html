@@ -1,0 +1,36 @@
+<!-- Autoship Customers Only Panel -->
+<div id="autoship-customers-only-panel" class="row" style="display: none">
+<div class="col-md-12">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Autoship Customers Only</h3>
+    </div>
+    <div class="panel-body">
+      <ul>
+        <li>What is the product on autoship?</li>
+        <li>When is that product due to ship next?</li>
+        <li>Is the product scheduled to ship in the next seven days?</li>
+        <li><strong>Rule:</strong>  This part of the program is only
+        concerned with the next Autoship scheduled to ship 7 days out.</li>
+        <li><strong>Strategy:</strong>  If we can identify these Autoships
+        then we can target them for upsell and cross sell opportunities
+        before their package ships and then they are guaranteed free
+        shipping along with getting both products at the same time.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+<!-- /.col-md-12 -->
+
+<!-- Actions -->
+<div class="actions">
+  <form action="{{ url_for('create_list') }}" method=post>
+    <input type="hidden" name="list_type_id" value="1">
+    <button type="submit" class="btn btn-default">Generate List</button>
+  </form>
+</div>
+<!-- /Actions -->
+
+</div>
+<!-- / Autoship Customers Only Panel -->
+

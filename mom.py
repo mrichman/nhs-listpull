@@ -17,8 +17,8 @@ mom = MOMClient(config)
 csv = mom.get_customers()
 """
 
+import datetime
 import logging
-
 from csv import Error, writer
 from io import BytesIO
 from pymssql import connect, InterfaceError
@@ -63,11 +63,19 @@ class MOMClient(object):
             conn = self.get_mom_connection()
             cur = conn.cursor()
             logging.info("ListPull_GetAllCustomers")
+            start = datetime.datetime.now()
             cur.execute("exec ListPull_GetAllCustomers")
+            end = datetime.datetime.now()
+            logging.info("Took {} seconds".format(end-start))
             data = cur.fetchall()
+            end2 = datetime.datetime.now()
+            logging.info("Got {} rows in {} seconds.".format(len(data),
+                                                             (end2-end)))
             for row in data:
                 writer(bio).writerow(row)
                 count += 1
+            end3 = datetime.datetime.now()
+            logging.info("Wrote CSV in {} seconds.".format(end3-end2))
         except Error as e:
             logging.error(e)
             raise

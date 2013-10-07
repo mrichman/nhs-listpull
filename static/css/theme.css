@@ -12,3 +12,15 @@ body {
 .theme-showcase > p > .btn {
   margin: 5px 0;
 }
+
+div.actions {
+    margin: 0 0 20px 16px;
+}
+
+#domMessage {
+    padding: 10px 0 10px 0;
+}
+
+#domMessage img {
+    margin-right: 10px;
+}
