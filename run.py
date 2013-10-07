@@ -9,7 +9,8 @@ import time
 
 from ConfigParser import SafeConfigParser
 from emailvision.restclient import RESTClient
-from flask import Flask, request, g, render_template, flash, send_file
+from flask import Flask, request, g, render_template, flash, send_file, \
+    redirect, url_for
 from mom import MOMClient
 from zlib import compress, decompress
 
@@ -67,6 +68,20 @@ def get_mom():
         mom_database = config.get("momdb", "db")
         g.mom = MOMClient(mom_host, mom_user, mom_password, mom_database)
     return g.mom
+
+
+def get_ev_client():
+    """Gets an instance of the EmailVision REST client."""
+    if not hasattr(g, 'ev'):
+        config_ini = os.path.join(os.path.dirname(__file__), 'config.ini')
+        config = SafeConfigParser()
+        config.read(config_ini)
+        ev_url = config.get("emailvision", "url")
+        ev_login = config.get("emailvision", "login")
+        ev_password = config.get("emailvision", "password")
+        ev_key = config.get("emailvision", "key")
+        g.ev = RESTClient(ev_url, ev_login, ev_password, ev_key)
+    return g.ev
 
 
 @app.teardown_appcontext
@@ -141,13 +156,23 @@ def get_csv(job_id):
 
 @app.route('/send/<int:job_id>', methods=['GET'])
 def send_to_emailvision(job_id):
-    raise NotImplementedError
-    ##TODO send to emailvision
-    #ev = RESTClient()
-    #csv = None #TODO get csv for job_id
-    #ev_job_id = ev.insert_upload(csv)
-    ##TODO update job_status (ev_job_id) VALUES (ev_job_id) where id = job_id
-    #return render_template('501.html'), 501
+    """ Sends raw CSV to EmailVision """
+    db = get_db()
+    cur = db.execute('select csv from job_status where id = {}'.format(job_id))
+    csv = cur.fetchone()[0]
+    logging.info("Got {} bytes of compressed CSV".format(len(csv)))
+    csv = decompress(csv)
+    logging.info("Sending {} bytes of raw CSV to EmailVision".format(len(csv)))
+    ev_job_id = get_ev_client().insert_upload(csv)
+    if ev_job_id > 0:
+        db.execute('update job_status set ev_job_id = ?, status=1 '
+                   'where id = ?', (ev_job_id, job_id))
+        db.commit()
+        flash("List successfully sent to EmailVision (Job ID {}).".format(
+            ev_job_id))
+    else:
+        flash("Something went horribly wrong.", "error")
+    return redirect('/')
 
 
 @app.errorhandler(404)

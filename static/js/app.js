@@ -12,4 +12,8 @@ $(document).ready(function() {
         $.blockUI({ message: $('#domMessage') });
     });
 
+    $('a.send-to-ev').click(function() {
+        $.blockUI({ message: $('#send-to-ev-msg') });
+    });
+
 });

@@ -17,10 +17,10 @@ div.actions {
     margin: 0 0 20px 16px;
 }
 
-#domMessage {
+#domMessage, #send-to-ev-msg {
     padding: 10px 0 10px 0;
 }
 
-#domMessage img {
+#domMessage, #send-to-ev-msg img {
     margin-right: 10px;
 }

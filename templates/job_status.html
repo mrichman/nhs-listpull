@@ -10,21 +10,25 @@
         <th>Actions</th>
     </tr>
     {% for job in jobs %}
-    <tr class="warning">
-        <td>{{ job.id }}</td>
-        <td>{{ job.name }}</td>
-        <td>{{ "{:,}".format(job.record_count) }}</td>
-        <td>{{ job.status }}</td>
-        <td>{{ job.created_at }}</td>
-        <td>
-            <a class="btn btn-primary btn-xs" href="/csv/{{ job.id }}">
-            Download CSV
-            </a>
-            <a class="btn btn-primary btn-xs" href="/send/{{ job.id }}">
-            Send to EmailVision
-            </a>
-        </td>
-    </tr>
+      {% if job.status == 'Pending' %}
+        <tr class="warning">
+      {% else %}
+        <tr class="success"> <!-- info, danger -->
+      {% endif %}
+          <td>{{ job.id }}</td>
+          <td>{{ job.name }}</td>
+          <td>{{ "{:,}".format(job.record_count) }}</td>
+          <td>{{ job.status }}</td>
+          <td>{{ job.created_at }}</td>
+          <td>
+              <a class="btn btn-primary btn-xs" href="/csv/{{ job.id }}">
+              Download CSV
+              </a>
+              <a class="btn btn-primary btn-xs send-to-ev" href="/send/{{ job.id }}">
+              Send to EmailVision
+              </a>
+          </td>
+      </tr>
     {% else %}
     <tr class="danger">
         <td colspan="6">No records found</td>
