@@ -83,3 +83,66 @@ class MOMClient(object):
             logging.error(ex.message)
             raise
         return bio.getvalue(), count
+
+    def get_customers_excl_autoship(self):
+        """
+        Get all customers from MOM, excluding Autoship customers, opt-outs and
+        Amazon emails. Returns CSV and record count
+        """
+        bio = BytesIO()
+        count = 0
+        try:
+            conn = self.get_mom_connection()
+            cur = conn.cursor()
+            logging.info("ListPull_GetAllCustomers_ExclAS")
+            start = datetime.datetime.now()
+            cur.execute("exec ListPull_GetAllCustomers_ExclAS")
+            end = datetime.datetime.now()
+            logging.info("Took {} seconds".format(end-start))
+            data = cur.fetchall()
+            end2 = datetime.datetime.now()
+            logging.info("Got {} rows in {} seconds.".format(len(data),
+                                                             (end2-end)))
+            for row in data:
+                writer(bio).writerow(row)
+                count += 1
+            end3 = datetime.datetime.now()
+            logging.info("Wrote CSV in {} seconds.".format(end3-end2))
+        except Error as e:
+            logging.error(e)
+            raise
+        except Exception as ex:
+            logging.error(ex.message)
+            raise
+        return bio.getvalue(), count
+
+    def get_customers_reengagement(self):
+        """
+        Re-engagement File (Non-Autoship Customers idle > 120 days)
+        """
+        bio = BytesIO()
+        count = 0
+        try:
+            conn = self.get_mom_connection()
+            cur = conn.cursor()
+            logging.info("ListPull_Reengagement")
+            start = datetime.datetime.now()
+            cur.execute("exec ListPull_Reengagement")
+            end = datetime.datetime.now()
+            logging.info("Took {} seconds".format(end-start))
+            data = cur.fetchall()
+            end2 = datetime.datetime.now()
+            logging.info("Got {} rows in {} seconds.".format(len(data),
+                                                             (end2-end)))
+            for row in data:
+                writer(bio).writerow(row)
+                count += 1
+            end3 = datetime.datetime.now()
+            logging.info("Wrote CSV in {} seconds.".format(end3-end2))
+        except Error as e:
+            logging.error(e)
+            raise
+        except Exception as ex:
+            logging.error(ex.message)
+            raise
+        return bio.getvalue(), count

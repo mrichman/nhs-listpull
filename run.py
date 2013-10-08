@@ -10,7 +10,7 @@ import time
 from ConfigParser import SafeConfigParser
 from emailvision.restclient import RESTClient
 from flask import Flask, request, g, render_template, flash, send_file, \
-    redirect, url_for
+    redirect
 from mom import MOMClient
 from zlib import compress, decompress
 
@@ -87,6 +87,8 @@ def get_ev_client():
 @app.teardown_appcontext
 def close_db(error):
     """Closes the database again at the end of the request."""
+    if error is not None:
+        app.logger.error(error)
     if hasattr(g, 'sqlite_db'):
         g.sqlite_db.close()
 
@@ -136,7 +138,47 @@ def create_list():
                (list_type_id, count, 0, csv))
     db.commit()
     flash('List successfully generated with {:,} records'.format(count))
-    return show_jobs()
+    return redirect('/')
+
+
+@app.route('/list-noas', methods=['POST'])
+def create_list_no_autoship():
+    app.logger.debug("create_list_no_autoship()")
+    list_type_id = request.form['list_type_id']
+    app.logger.debug("list_type_id=" + list_type_id)
+    mom = get_mom()
+    app.logger.debug("mom.get_customers_excl_autoship()")
+    csv, count = mom.get_customers_excl_autoship()
+    app.logger.debug("CSV is {} bytes".format(len(csv)))
+    csv = buffer(compress(csv))
+    app.logger.debug("Compressed CSV is {} bytes".format(len(csv)))
+    db = get_db()
+    db.execute(('insert into job_status '
+               '(list_type_id, record_count, status, csv) VALUES (?,?,?,?)'),
+               (list_type_id, count, 0, csv))
+    db.commit()
+    flash('List successfully generated with {:,} records'.format(count))
+    return redirect('/')
+
+
+@app.route('/list-reengagement', methods=['POST'])
+def create_list_reengagement():
+    app.logger.debug("create_list_reengagement()")
+    list_type_id = request.form['list_type_id']
+    app.logger.debug("list_type_id=" + list_type_id)
+    mom = get_mom()
+    app.logger.debug("mom.get_customers_reengagement()")
+    csv, count = mom.get_customers_reengagement()
+    app.logger.debug("CSV is {} bytes".format(len(csv)))
+    csv = buffer(compress(csv))
+    app.logger.debug("Compressed CSV is {} bytes".format(len(csv)))
+    db = get_db()
+    db.execute(('insert into job_status '
+               '(list_type_id, record_count, status, csv) VALUES (?,?,?,?)'),
+               (list_type_id, count, 0, csv))
+    db.commit()
+    flash('List successfully generated with {:,} records'.format(count))
+    return redirect('/')
 
 
 @app.route('/csv/<int:job_id>', methods=['GET'])
@@ -177,12 +219,12 @@ def send_to_emailvision(job_id):
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html'), 404
+    return render_template('404.html', e=e), 404
 
 
 @app.errorhandler(500)
 def internal_error(e):
-    return render_template('500.html'), 500
+    return render_template('500.html', e=e), 500
 
 if __name__ == '__main__':
     app.logger.debug(__name__)
