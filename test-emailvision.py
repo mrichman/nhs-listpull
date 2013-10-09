@@ -11,11 +11,11 @@ from mom import MOMClient
 
 
 def main():
-    httplib.HTTPConnection.debuglevel = 0  # or 1
+    httplib.HTTPConnection.debuglevel = 1  # or 1
     logging.basicConfig()
     logging.getLogger().setLevel(logging.DEBUG)
     requests_log = logging.getLogger("requests.packages.urllib3")
-    requests_log.setLevel(logging.ERROR)
+    requests_log.setLevel(logging.DEBUG)
     requests_log.propagate = True
     config_ini = os.path.join(os.path.dirname(__file__), 'config.ini')
     config = SafeConfigParser()
@@ -30,7 +30,7 @@ def main():
     ev_key = config.get("emailvision", "key")
     ev = RESTClient(ev_url, ev_login, ev_password, ev_key)
     mom = MOMClient(mom_host, mom_user, mom_password, mom_database)
-    csv = mom.get_customers()
+    csv, count = mom.get_customers()
     job_id = ev.insert_upload(csv)
     print("Job ID: " + job_id)
 

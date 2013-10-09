@@ -14,7 +14,7 @@ from urllib import urlencode
 from xml.etree import ElementTree as et
 from xml.dom.minidom import parseString
 
-httplib.HTTPConnection.debuglevel = 0  # or 1
+httplib.HTTPConnection.debuglevel = 1  # or 1
 logging.basicConfig()
 logging.getLogger().setLevel(logging.DEBUG)
 requests_log = logging.getLogger("requests.packages.urllib3")
