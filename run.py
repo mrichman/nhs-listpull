@@ -217,6 +217,38 @@ def send_to_emailvision(job_id):
     return redirect('/')
 
 
+@app.route('/delete/<int:job_id>', methods=['GET'])
+def delete_job(job_id):
+    """Delete a job"""
+    try:
+        db = get_db()
+        db.execute('delete from job_status where id = {}'.format(job_id))
+        db.commit()
+        flash("Job {} successfully deleted".format(job_id))
+    except Exception as e:
+        flash("Something went horribly wrong. {}".format(e), "error")
+    return redirect('/')
+
+
+@app.route('/list-as', methods=['POST'])
+def create_list_autoships():
+    app.logger.debug("create_list_autoships()")
+    list_type_id = request.form['list_type_id']
+    app.logger.debug("list_type_id=" + list_type_id)
+    app.logger.debug("mom.get_autoships()")
+    csv, count = get_mom().get_autoships()
+    app.logger.debug("CSV is {} bytes".format(len(csv)))
+    csv = buffer(compress(csv))
+    app.logger.debug("Compressed CSV is {} bytes".format(len(csv)))
+    db = get_db()
+    db.execute(('insert into job_status '
+               '(list_type_id, record_count, status, csv) VALUES (?,?,?,?)'),
+               (list_type_id, count, 0, csv))
+    db.commit()
+    flash('List successfully generated with {:,} records'.format(count))
+    return redirect('/')
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html', e=e), 404
