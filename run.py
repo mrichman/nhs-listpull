@@ -249,6 +249,29 @@ def create_list_autoships():
     return redirect('/')
 
 
+@app.route('/list-cat-x-sell', methods=['POST'])
+def create_list_cat_x_sell():
+    app.logger.debug("create_list_cat_x_sell()")
+    list_type_id = request.form['list_type_id']
+    category_list = request.form.getlist('category-list')
+    product_list = request.form.getlist('product-list')
+    app.logger.debug("list_type_id=" + list_type_id)
+    app.logger.debug("category_list=" + ','.join(category_list))
+    app.logger.debug("product_list=" + ','.join(product_list))
+    app.logger.debug("mom.get_cat_x_sell()")
+    csv, count = get_mom().get_cat_x_sell()
+    app.logger.debug("CSV is {} bytes".format(len(csv)))
+    csv = buffer(compress(csv))
+    app.logger.debug("Compressed CSV is {} bytes".format(len(csv)))
+    db = get_db()
+    db.execute(('insert into job_status '
+               '(list_type_id, record_count, status, csv) VALUES (?,?,?,?)'),
+               (list_type_id, count, 0, csv))
+    db.commit()
+    flash('List successfully generated with {:,} records'.format(count))
+    return redirect('/')
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html', e=e), 404

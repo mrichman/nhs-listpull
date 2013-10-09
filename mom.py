@@ -178,3 +178,35 @@ class MOMClient(object):
             logging.error(ex.message)
             raise
         return bio.getvalue(), count
+
+    def get_cat_x_sell(self):
+        """
+        Get Category Cross-Sells.
+        Returns CSV and record count.
+        """
+        bio = BytesIO()
+        count = 0
+        try:
+            conn = self.get_mom_connection()
+            cur = conn.cursor()
+            logging.info("ListPull_GetCatXSells")
+            start = datetime.datetime.now()
+            cur.execute("exec ListPull_GetCatXSells")
+            end = datetime.datetime.now()
+            logging.info("Took {} seconds".format(end-start))
+            data = cur.fetchall()
+            end2 = datetime.datetime.now()
+            logging.info("Got {} rows in {} seconds.".format(len(data),
+                                                             (end2-end)))
+            for row in data:
+                writer(bio).writerow(row)
+                count += 1
+            end3 = datetime.datetime.now()
+            logging.info("Wrote CSV in {} seconds.".format(end3-end2))
+        except Error as e:
+            logging.error(e)
+            raise
+        except Exception as ex:
+            logging.error(ex.message)
+            raise
+        return bio.getvalue(), count
