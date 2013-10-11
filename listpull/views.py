@@ -7,26 +7,28 @@ from StringIO import StringIO
 
 from flask import request, render_template, flash, redirect, send_file
 
-from listpull import app, db, mom, sf
+from . import app, db, mom, sf
+from .models import Job
 
 
 @app.route('/')
 def show_jobs():
     app.logger.debug("show_jobs()")
-    sql = '''
-        select j.id, j.record_count, j.ev_job_id,
-        j.created_at, j.csv, t.name,
-        case
-            when j.status = 0 then 'Pending'
-            when j.status = 1 then 'Complete'
-        end status
-        from job_status j
-        inner join list_types t on (j.list_type_id = t.id)
-        order by j.id desc'''
-    cur = db.execute(sql)
-    jobs = cur.fetchall()
+    #sql = '''
+    #    select j.id, j.record_count, j.ev_job_id,
+    #    j.created_at, j.csv, t.name,
+    #    case
+    #        when j.status = 0 then 'Pending'
+    #        when j.status = 1 then 'Complete'
+    #    end status
+    #    from job_status j
+    #    inner join list_types t on (j.list_type_id = t.id)
+    #    order by j.id desc'''
+    #cur = db.execute(sql)
+    #jobs = cur.fetchall()
+    jobs = Job.query.all()
     app.logger.debug("Found {} jobs".format(len(jobs)))
-    return render_template('templates/job_status.html', jobs=None)
+    return render_template('jobs.html', jobs=jobs)
 
 
 @app.route('/list', methods=['POST'])
