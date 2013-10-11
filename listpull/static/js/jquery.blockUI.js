@@ -611,7 +611,7 @@
 
 	/*global define:true */
 	if (typeof define === 'function' && define.amd && define.amd.jQuery) {
-		define(['jquery'], setup);
+		define(['../../../../../../../usr/local/Cellar/python/2.7.5/Frameworks/Python.framework/Versions/2.7/lib/python2'], setup);
 	} else {
 		setup(jQuery);
 	}

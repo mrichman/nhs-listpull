@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "base.html" %}
 {% block job_status %}
   <table class="table table-hover">
     <tr>
@@ -27,7 +27,7 @@
               Download CSV
               </a>
               <a class="btn btn-primary btn-xs send-to-ev" href="/send/{{ job.id }}">
-              Send to EmailVision
+              Send to SmartFocus
               </a>
               <a class="btn btn-danger btn-xs send-to-ev"
                  onclick="return confirm('Are you sure?')" href="/delete/{{ job.id }}">

@@ -28,10 +28,8 @@
 <div class="container theme-showcase">
 
   <!-- Flash Message -->
-  {% for message in get_flashed_messages() %}
-    <div class="alert alert-success">
-        {{ message }}
-    </div>
+  {% for category, msg in get_flashed_messages(with_categories=true) %}
+    <div class="alert alert-{{ category }}">{{ msg }}</div>
   {% endfor %}
   <!-- / Flash Message -->
 
@@ -57,7 +55,7 @@
   <div id="send-to-ev-msg" style="display:none;">
     <img src={{ url_for('static', filename='img/spinner.gif') }}
     <span>
-      Sending your job to EmailVision. Please be patient.
+      Sending your job to SmartFocus. Please be patient.
     </span>
   </div>
 

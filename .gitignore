@@ -36,11 +36,12 @@ nosetests.xml
 
 # Virtualenv
 venv
-*.pyc
 
 # PyCharm
 .idea
 
+# Project-specific
 config.ini
-
+config.py
 *.log
+app.db

@@ -1,10 +1,11 @@
 Flask==0.10.1
+Flask-Migrate==0.1.4
 Jinja2==2.7.1
 MarkupSafe==0.18
 Werkzeug==0.9.4
 itsdangerous==0.23
-poster==0.8.1
-## FIXME: could not find svn URL in dependency_links for this package:
-pymssql==2.0.0b1-dev-20130403
-requests==1.2.3
 wsgiref==0.1.2
+SQLAlchemy==0.8.2
+Flask-SQLAlchemy==1.0
+emailvision==1.0.0
+mom==1.0.0

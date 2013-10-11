@@ -1,3 +1,4 @@
+============
 nhs-listpull
 ============
 
@@ -100,7 +101,7 @@ products at the same time.
 -   Include customers who have ordered autoship as we are identifying
     what category they belong to for cross-sell
 
-Emails are sent to EmailVision by Category Buckets.
+Emails are sent to SmartFocus by Category Buckets.
 
 **Entire House File No-Autoship Email Pull:**
 
@@ -162,4 +163,3 @@ campaigns, each new iteration of responders being suppressed.
  
 Each week new customers flow into Bucket 1.  The App needs to know how to 
 differentiate that.
-
