@@ -31,5 +31,5 @@ sf = RESTClient(app.config['SMARTFOCUS_URL'],
                 app.config['SMARTFOCUS_PASSWORD'],
                 app.config['SMARTFOCUS_KEY'])
 
-#import listpull.models
-#import listpull.views
+import listpull.models
+import listpull.views
