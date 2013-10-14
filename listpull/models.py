@@ -11,15 +11,18 @@ class Job(db.Model):
                                 backref=db.backref('jobs', lazy='dynamic'))
     record_count = db.Column(db.Integer, nullable=False)
     status = db.Column(db.Integer, nullable=False)
-    sf_job_id = db.Column(db.Integer, nullable=False)
+    sf_job_id = db.Column(db.Integer, nullable=True)
     created_at = db.Column(db.DateTime, nullable=False)
     compressed_csv = db.Column(db.LargeBinary)
 
-    def __init__(self, list_type, created_at=None):
-        self.list_type = list_type
-        if created_at is None:
-            created_at = datetime.utcnow()
+    def __init__(self, list_type_id, record_count=0, status=0, sf_job_id=0,
+                 csv=None, created_at=datetime.utcnow()):
+        self.list_type_id = list_type_id
         self.created_at = created_at
+        self.record_count = record_count
+        self.status = status
+        self.sf_job_id = sf_job_id
+        self.csv = csv
 
     def __repr__(self):
         return '<Job {}>'.format(self.id)

@@ -24,3 +24,8 @@ div.actions {
 #domMessage, #send-to-ev-msg img {
     margin-right: 10px;
 }
+
+#badges a {
+    text-decoration: none;
+    margin-right: 10px;
+}

@@ -11,15 +11,15 @@
         <th>Actions</th>
     </tr>
     {% for job in jobs %}
-      {% if job.status == 'Pending' %}
+      {% if job.status == 0 %}
         <tr class="warning">
       {% else %}
         <tr class="success"> <!-- info, danger -->
       {% endif %}
           <td>{{ job.id }}</td>
-          <td>{{ job.name }}</td>
+          <td>{{ job.list_type.name }}</td>
           <td>{{ "{:,}".format(job.record_count) }}</td>
-          <td>{{ job.status }}</td>
+          <td>{% if job.status == 0 %}Pending{% else %}Complete{% endif %}</td>
           <td>{{ job.ev_job_id }}</td>
           <td>{{ job.created_at }}</td>
           <td>

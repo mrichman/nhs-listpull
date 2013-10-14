@@ -8,32 +8,24 @@ from StringIO import StringIO
 from flask import request, render_template, flash, redirect, send_file
 
 from . import app, db, mom, sf
-from .models import Job
+from .models import Job, ListType
 
 
 @app.route('/')
 def show_jobs():
     app.logger.debug("show_jobs()")
-    #sql = '''
-    #    select j.id, j.record_count, j.ev_job_id,
-    #    j.created_at, j.csv, t.name,
-    #    case
-    #        when j.status = 0 then 'Pending'
-    #        when j.status = 1 then 'Complete'
-    #    end status
-    #    from job_status j
-    #    inner join list_types t on (j.list_type_id = t.id)
-    #    order by j.id desc'''
-    #cur = db.execute(sql)
-    #jobs = cur.fetchall()
-    jobs = Job.query.all()
+    jobs = db.session.query(Job).\
+        join(ListType).\
+        filter(Job.list_type_id == ListType.id).\
+        order_by(Job.id.desc()).\
+        all()
     app.logger.debug("Found {} jobs".format(len(jobs)))
+    app.logger.debug("jobs: {}".format(jobs))
     return render_template('jobs.html', jobs=jobs)
 
 
 @app.route('/list', methods=['POST'])
 def create_list():
-    # curl --data "list_type_id=1" http://localhost:5000/list
     app.logger.debug("create_list()")
     list_type_id = request.form['list_type_id']
     app.logger.debug("list_type_id=" + list_type_id)
@@ -42,11 +34,11 @@ def create_list():
     app.logger.debug("CSV is {} bytes".format(len(csv)))
     csv = buffer(compress(csv))
     app.logger.debug("Compressed CSV is {} bytes".format(len(csv)))
-    db.execute(('insert into job_status '
-               '(list_type_id, record_count, status, csv) VALUES (?,?,?,?)'),
-               (list_type_id, count, 0, csv))
-    db.commit()
-    flash('List successfully generated with {:,} records'.format(count))
+    job = Job(list_type_id=list_type_id, record_count=count, csv=csv)
+    db.session.add(job)
+    db.session.commit()
+    flash('List successfully generated with {:,} records'.format(count),
+          "success")
     return redirect('/')
 
 
@@ -60,11 +52,11 @@ def create_list_no_autoship():
     app.logger.debug("CSV is {} bytes".format(len(csv)))
     csv = buffer(compress(csv))
     app.logger.debug("Compressed CSV is {} bytes".format(len(csv)))
-    db.execute(('insert into job_status '
-               '(list_type_id, record_count, status, csv) VALUES (?,?,?,?)'),
-               (list_type_id, count, 0, csv))
-    db.commit()
-    flash('List successfully generated with {:,} records'.format(count))
+    job = Job(list_type_id=list_type_id, record_count=count, csv=csv)
+    db.session.add(job)
+    db.session.commit()
+    flash('List successfully generated with {:,} records'.format(count),
+          "success")
     return redirect('/')
 
 
@@ -78,11 +70,11 @@ def create_list_reengagement():
     app.logger.debug("CSV is {} bytes".format(len(csv)))
     csv = buffer(compress(csv))
     app.logger.debug("Compressed CSV is {} bytes".format(len(csv)))
-    db.execute(('insert into job_status '
-               '(list_type_id, record_count, status, csv) VALUES (?,?,?,?)'),
-               (list_type_id, count, 0, csv))
-    db.commit()
-    flash('List successfully generated with {:,} records'.format(count))
+    job = Job(list_type_id=list_type_id, record_count=count, csv=csv)
+    db.session.add(job)
+    db.session.commit()
+    flash('List successfully generated with {:,} records'.format(count),
+          "success")
     return redirect('/')
 
 
@@ -110,11 +102,16 @@ def send_to_smartfocus(job_id):
     logging.info("Sending {} bytes of raw CSV to SmartFocus".format(len(csv)))
     ev_job_id = sf.insert_upload(csv)
     if ev_job_id > 0:
-        db.execute('update job_status set ev_job_id = ?, status=1 '
-                   'where id = ?', (ev_job_id, job_id))
+        job = db.session.query(Job).filter_by(id=job_id).first()
+        job.ev_job_id = ev_job_id
+        job.status = 1
+        db.session.update(job)
+        db.session.commit()
+        #db.execute('update job_status set ev_job_id = ?, status=1 '
+        #           'where id = ?', (ev_job_id, job_id))
         db.commit()
         flash("List successfully sent to SmartFocus (Job ID {}).".format(
-            ev_job_id))
+            ev_job_id), "success")
     else:
         flash("Something went horribly wrong.", "error")
     return redirect('/')
@@ -124,9 +121,11 @@ def send_to_smartfocus(job_id):
 def delete_job(job_id):
     """Delete a job"""
     try:
-        db.execute('delete from job_status where id = {}'.format(job_id))
+        job = db.session.query(Job).filter_by(id=job_id).first()
+        db.session.delete(job)
+        db.session.commit()
         db.commit()
-        flash("Job {} successfully deleted".format(job_id))
+        flash("Job {} successfully deleted".format(job_id), "success")
     except Exception as e:
         flash("Something went horribly wrong. {}".format(e), "error")
     return redirect('/')
@@ -142,11 +141,11 @@ def create_list_autoships():
     app.logger.debug("CSV is {} bytes".format(len(csv)))
     csv = buffer(compress(csv))
     app.logger.debug("Compressed CSV is {} bytes".format(len(csv)))
-    db.execute(('insert into job_status '
-               '(list_type_id, record_count, status, csv) VALUES (?,?,?,?)'),
-               (list_type_id, count, 0, csv))
-    db.commit()
-    flash('List successfully generated with {:,} records'.format(count))
+    job = Job(list_type_id=list_type_id, record_count=count, csv=csv)
+    db.session.add(job)
+    db.session.commit()
+    flash('List successfully generated with {:,} records'.format(count),
+          "success")
     return redirect('/')
 
 
@@ -164,11 +163,11 @@ def create_list_cat_x_sell():
     app.logger.debug("CSV is {} bytes".format(len(csv)))
     csv = buffer(compress(csv))
     app.logger.debug("Compressed CSV is {} bytes".format(len(csv)))
-    db.execute(('insert into job_status '
-               '(list_type_id, record_count, status, csv) VALUES (?,?,?,?)'),
-               (list_type_id, count, 0, csv))
-    db.commit()
-    flash('List successfully generated with {:,} records'.format(count))
+    job = Job(list_type_id=list_type_id, record_count=count, csv=csv)
+    db.session.add(job)
+    db.session.commit()
+    flash('List successfully generated with {:,} records'.format(count),
+          "success")
     return redirect('/')
 
 

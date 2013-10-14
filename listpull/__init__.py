@@ -3,6 +3,9 @@
 
 """ listpull module """
 
+import logging
+from logging.handlers import RotatingFileHandler
+
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.script import Manager
@@ -13,6 +16,10 @@ from smartfocus.restclient import RESTClient
 
 app = Flask(__name__)
 app.config.from_object('config')
+
+handler = RotatingFileHandler(__name__ + '.log', maxBytes=10000, backupCount=1)
+handler.setLevel(logging.DEBUG)
+app.logger.addHandler(handler)
 
 db = SQLAlchemy(app)
 

@@ -46,17 +46,13 @@
   {% include "partials/by-products-purchased.html" %}
 
   <div id="domMessage" style="display:none;">
-    <img src={{ url_for('static', filename='img/spinner.gif') }}
-    <span>
-      We are processing your request. Please be patient.
-    </span>
+    <img src="{{ url_for('static', filename='img/spinner.gif') }}" alt="spinner">
+    <span>We are processing your request. Please be patient.</span>
   </div>
 
   <div id="send-to-ev-msg" style="display:none;">
-    <img src={{ url_for('static', filename='img/spinner.gif') }}
-    <span>
-      Sending your job to SmartFocus. Please be patient.
-    </span>
+    <img src="{{ url_for('static', filename='img/spinner.gif') }}" alt="spinner">
+    <span>Sending your job to SmartFocus. Please be patient.</span>
   </div>
 
   <!-- Job Status -->
@@ -73,9 +69,19 @@
     </div>
    </div>
 
-  <a href="http://flask.pocoo.org/" target="_blank">
-    <img src="http://flask.pocoo.org/static/badges/made-with-flask-s.png">
-  </a>
+   <div id="badges">
+    <a href="http://www.python.org" target="_blank">
+       <img src="http://www.python.org/community/logos/python-powered-w-100x40.png" alt="python powered" title="Python is a programming language that lets you work more quickly and integrate your systems more effectively. You can learn to use Python and see almost immediate gains in productivity and lower maintenance costs.">
+    </a>
+
+    <a href="http://flask.pocoo.org/" target="_blank">
+      <img src="http://flask.pocoo.org/static/badges/made-with-flask-s.png" alt="made with Flask" title="Flask is a microframework for Python based on Werkzeug, Jinja 2 and good intentions.">
+    </a>
+
+    <a href="http://www.w3.org/html/logo/" target="_blank">
+      <img src="http://www.w3.org/html/logo/badge/html5-badge-h-css3-device-performance-semantics.png" width="115" height="32" alt="HTML5 Powered with CSS3 / Styling, Device Access, Performance &amp; Integration, and Semantics" title="HTML5 Powered with CSS3 / Styling, Device Access, Performance &amp; Integration, and Semantics">
+    </a>
+  </div>
 
 </div>
 <!-- /.container -->
