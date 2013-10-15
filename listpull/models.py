@@ -1,9 +1,12 @@
+""" Flask Models """
+
 from datetime import datetime
 
 from listpull import db
 
 
 class Job(db.Model):
+    """ SQLAlchemy Job Model """
     id = db.Column(db.Integer, primary_key=True)
     list_type_id = db.Column(db.Integer, db.ForeignKey('list_type.id'),
                              nullable=False)
@@ -22,13 +25,14 @@ class Job(db.Model):
         self.record_count = record_count
         self.status = status
         self.sf_job_id = sf_job_id
-        self.csv = csv
+        self.compressed_csv = csv
 
     def __repr__(self):
         return '<Job {}>'.format(self.id)
 
 
 class ListType(db.Model):
+    """ SQLAlchemy ListType Model """
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True, nullable=False)
 

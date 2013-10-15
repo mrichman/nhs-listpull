@@ -4,6 +4,23 @@ Revision ID: 582f981ffa5e
 Revises: None
 Create Date: 2013-10-12 09:24:53.387086
 
+./run.py db --help
+usage: Perform database migrations
+
+positional arguments:
+  {upgrade,migrate,current,stamp,init,downgrade,history,revision}
+    upgrade             Upgrade to a later version
+    migrate             Alias for 'revision --autogenerate'
+    current             Display the current revision for each database.
+    stamp               'stamp' the revision table with the given revision;
+                        don't run any migrations
+    init                Generates a new migration
+    downgrade           Revert to a previous version
+    history             List changeset scripts in chronological order.
+    revision            Create a new revision file.
+
+optional arguments:
+  -h, --help            show this help message and exit
 """
 
 # revision identifiers, used by Alembic.

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+""" Flask Views """
+
 import logging
 import time
 from zlib import compress, decompress
@@ -13,6 +15,7 @@ from .models import Job, ListType
 
 @app.route('/')
 def show_jobs():
+    """ Default Route """
     app.logger.debug("show_jobs()")
     jobs = db.session.query(Job).\
         join(ListType).\
@@ -26,24 +29,26 @@ def show_jobs():
 
 @app.route('/list', methods=['POST'])
 def create_list():
+    """ Form post action to create a list """
     app.logger.debug("create_list()")
     list_type_id = request.form['list_type_id']
     app.logger.debug("list_type_id=" + list_type_id)
     app.logger.debug("mom.get_customers()")
     csv, count = mom.get_customers()
     app.logger.debug("CSV is {} bytes".format(len(csv)))
-    csv = buffer(compress(csv))
+    csv = compress(csv)
     app.logger.debug("Compressed CSV is {} bytes".format(len(csv)))
     job = Job(list_type_id=list_type_id, record_count=count, csv=csv)
     db.session.add(job)
     db.session.commit()
-    flash('List successfully generated with {:,} records'.format(count),
-          "success")
+    flash('Generated list with {:,} records and {:,} bytes of compressed CSV'.
+          format(count, len(csv)), "success")
     return redirect('/')
 
 
 @app.route('/list-noas', methods=['POST'])
 def create_list_no_autoship():
+    """ Form post action to create a list """
     app.logger.debug("create_list_no_autoship()")
     list_type_id = request.form['list_type_id']
     app.logger.debug("list_type_id=" + list_type_id)
@@ -62,6 +67,7 @@ def create_list_no_autoship():
 
 @app.route('/list-reengagement', methods=['POST'])
 def create_list_reengagement():
+    """ Form post action to create a list """
     app.logger.debug("create_list_reengagement()")
     list_type_id = request.form['list_type_id']
     app.logger.debug("list_type_id=" + list_type_id)
@@ -80,9 +86,13 @@ def create_list_reengagement():
 
 @app.route('/csv/<int:job_id>', methods=['GET'])
 def get_csv(job_id):
-    cur = db.execute('select csv from job_status where id = {}'.format(job_id))
-    csv = cur.fetchone()[0]
-    csv = decompress(csv)
+    """ Action to retrieve the compressed CSV from the database """
+    job = db.session.query(Job).filter_by(id=job_id).first()
+    if job.compressed_csv is None:
+        flash("No data available.", "danger")
+        return redirect('/')
+    app.logger.info("CSV {}".format(job.compressed_csv))
+    csv = decompress(job.compressed_csv)
     sio = StringIO()
     sio.write(csv)
     sio.seek(0)
@@ -95,25 +105,23 @@ def get_csv(job_id):
 @app.route('/send/<int:job_id>', methods=['GET'])
 def send_to_smartfocus(job_id):
     """ Sends raw CSV to SmartFocus """
-    cur = db.execute('select csv from job_status where id = {}'.format(job_id))
-    csv = cur.fetchone()[0]
-    logging.info("Got {} bytes of compressed CSV".format(len(csv)))
-    csv = decompress(csv)
+    job = db.session.query(Job).filter_by(id=job_id).first()
+    if job.compressed_csv is None:
+        flash("No data available.", "danger")
+        return redirect('/')
+    csv = decompress(job.compressed_csv)
     logging.info("Sending {} bytes of raw CSV to SmartFocus".format(len(csv)))
     ev_job_id = sf.insert_upload(csv)
     if ev_job_id > 0:
         job = db.session.query(Job).filter_by(id=job_id).first()
         job.ev_job_id = ev_job_id
         job.status = 1
-        db.session.update(job)
-        db.session.commit()
-        #db.execute('update job_status set ev_job_id = ?, status=1 '
-        #           'where id = ?', (ev_job_id, job_id))
-        db.commit()
+        db.session.add(job)
+        db.session.flush()
         flash("List successfully sent to SmartFocus (Job ID {}).".format(
             ev_job_id), "success")
     else:
-        flash("Something went horribly wrong.", "error")
+        flash("Something went horribly wrong.", "danger")
     return redirect('/')
 
 
@@ -124,15 +132,15 @@ def delete_job(job_id):
         job = db.session.query(Job).filter_by(id=job_id).first()
         db.session.delete(job)
         db.session.commit()
-        db.commit()
         flash("Job {} successfully deleted".format(job_id), "success")
     except Exception as e:
-        flash("Something went horribly wrong. {}".format(e), "error")
+        flash("Something went horribly wrong. {}".format(e), "danger")
     return redirect('/')
 
 
 @app.route('/list-as', methods=['POST'])
 def create_list_autoships():
+    """ Form post action to create a list """
     app.logger.debug("create_list_autoships()")
     list_type_id = request.form['list_type_id']
     app.logger.debug("list_type_id=" + list_type_id)
@@ -151,6 +159,7 @@ def create_list_autoships():
 
 @app.route('/list-cat-x-sell', methods=['POST'])
 def create_list_cat_x_sell():
+    """ Form post action to create a list """
     app.logger.debug("create_list_cat_x_sell()")
     list_type_id = request.form['list_type_id']
     category_list = request.form.getlist('category-list')
@@ -173,9 +182,11 @@ def create_list_cat_x_sell():
 
 @app.errorhandler(404)
 def page_not_found(e):
+    """ Page Not Found """
     return render_template('templates/404.html', e=e), 404
 
 
 @app.errorhandler(500)
 def internal_error(e):
+    """ Internal Server Error """
     return render_template('templates/500.html', e=e), 500

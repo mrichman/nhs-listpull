@@ -1,44 +1,44 @@
 {% extends "base.html" %}
 {% block jobs %}
-  <table class="table table-hover">
-    <tr>
-        <th>ID</th>
-        <th>Type</th>
-        <th># Records</th>
-        <th>Status</th>
-        <th>EV Job ID</th>
-        <th>Date/Time (UTC)</th>
-        <th>Actions</th>
-    </tr>
-    {% for job in jobs %}
-      {% if job.status == 0 %}
-        <tr class="warning">
-      {% else %}
-        <tr class="success"> <!-- info, danger -->
-      {% endif %}
-          <td>{{ job.id }}</td>
-          <td>{{ job.list_type.name }}</td>
-          <td>{{ "{:,}".format(job.record_count) }}</td>
-          <td>{% if job.status == 0 %}Pending{% else %}Complete{% endif %}</td>
-          <td>{{ job.ev_job_id }}</td>
-          <td>{{ job.created_at }}</td>
-          <td>
-              <a class="btn btn-primary btn-xs" href="/csv/{{ job.id }}">
-              Download CSV
-              </a>
-              <a class="btn btn-primary btn-xs send-to-ev" href="/send/{{ job.id }}">
-              Send to SmartFocus
-              </a>
-              <a class="btn btn-danger btn-xs send-to-ev"
-                 onclick="return confirm('Are you sure?')" href="/delete/{{ job.id }}">
-              Delete
-              </a>
-          </td>
-      </tr>
+<table class="table table-hover">
+  <tr>
+    <th>ID</th>
+    <th>Type</th>
+    <th># Records</th>
+    <th>Status</th>
+    <th>EV Job ID</th>
+    <th>Date/Time (UTC)</th>
+    <th>Actions</th>
+  </tr>
+  {% for job in jobs %}
+    {% if job.status == 0 %}
+      <tr class="warning">
     {% else %}
-    <tr class="danger">
-        <td colspan="7">No records found</td>
+      <tr class="success"> <!-- info, danger -->
+    {% endif %}
+      <td>{{ job.id }}</td>
+      <td>{{ job.list_type.name }}</td>
+      <td>{{ "{:,}".format(job.record_count) }}</td>
+      <td>{% if job.status == 0 %}Pending{% else %}Complete{% endif %}</td>
+      <td>{{ job.ev_job_id }}</td>
+      <td>{{ job.created_at }}</td>
+      <td>
+        <a class="btn btn-primary btn-xs" href="/csv/{{ job.id }}">
+        Download CSV
+        </a>
+        <a class="btn btn-primary btn-xs send-to-ev" href="/send/{{ job.id }}">
+        Send to SmartFocus
+        </a>
+        <a class="btn btn-danger btn-xs send-to-ev"
+           onclick="return confirm('Are you sure?')" href="/delete/{{ job.id }}">
+        Delete
+        </a>
+      </td>
     </tr>
-    {% endfor %}
-  </table>
+  {% else %}
+  <tr class="danger">
+    <td colspan="7">No records found</td>
+  </tr>
+  {% endfor %}
+</table>
 {% endblock %}
