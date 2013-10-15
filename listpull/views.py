@@ -2,7 +2,6 @@
 
 """ Flask Views """
 
-import logging
 import time
 from zlib import compress, decompress
 from StringIO import StringIO
@@ -110,16 +109,15 @@ def send_to_smartfocus(job_id):
         flash("No data available.", "danger")
         return redirect('/')
     csv = decompress(job.compressed_csv)
-    logging.info("Sending {} bytes of raw CSV to SmartFocus".format(len(csv)))
-    ev_job_id = sf.insert_upload(csv)
-    if ev_job_id > 0:
+    app.logger.info("Sending {} bytes of raw CSV to SmartFocus".format(len(csv)))
+    sf_job_id = sf.insert_upload(csv)
+    if sf_job_id > 0:
         job = db.session.query(Job).filter_by(id=job_id).first()
-        job.ev_job_id = ev_job_id
+        job.sf_job_id = sf_job_id
         job.status = 1
-        db.session.add(job)
-        db.session.flush()
+        db.session.commit()
         flash("List successfully sent to SmartFocus (Job ID {}).".format(
-            ev_job_id), "success")
+            sf_job_id), "success")
     else:
         flash("Something went horribly wrong.", "danger")
     return redirect('/')
