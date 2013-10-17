@@ -22,7 +22,7 @@
             <p>
               Category to Select:
             </p>
-            <select id="category-list" name="category-list" multiple="multiple" size="28">
+            <select id="category-list" name="category" size="28">
               {% for c in categories %}
                 <option value="{{ c.id }}">{{ c.name }}</option>
               {% endfor %}
@@ -37,15 +37,13 @@
             <p>
               Product Emails to Suppress from Category:
             </p>
-            <select id="product-list" name="product-list" multiple="multiple" size="28">
+            <select id="product-list" name="products" multiple="multiple" size="28">
               {% for p in products %}
                 <option value="{{ p.id }}">{{ p.sku }} - {{ p.name }}</option>
               {% endfor %}
             </select>
-          </div>
-          <div style="margin-top: 10px;float:left;clear:both">
             <p class="text-muted" style="display:block;clear:both;margin-top:10px">
-              To select multiple items: CTRL+Click (Windows), &#8984;+Click (Mac)
+              To select multiple products: CTRL+Click (Windows), &#8984;+Click (Mac)
             </p>
           </div>
         </div>
