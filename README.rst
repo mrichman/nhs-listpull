@@ -1,19 +1,21 @@
-============
-nhs-listpull
-============
+***************************
+Email List Pull Application
+***************************
 
-To provide Email Vision with a daily feed of current segmented customer data for 
+To provide SmartFocus with a daily feed of current segmented customer data for
 targeted email campaigns, and fed through the Email Vision API to Campaign 
 Commander which then applies each segment to the proper trigger email.
 
+========================
 Initial Phase of Project
-------------------------
+========================
 
 The application needs to look at customer order data and discern the
 following:
 
+============================
 Time To Re-Order Email Pulls
-----------------------------
+============================
 
 -   Does the customer qualify for being sent an email?
 
@@ -132,12 +134,9 @@ campaigns to non-responders based on timing and purchasing rules.  So the
 initial goal here is to do the baton pass-off of qualifying a customer by 
 knowing:
 
-* Are they autoship?  [If yes some or all of their order goes into a Autoship 
-bucket]
-* Are they 35 days out from ship date and have an email?  [If yes then they 
-come over]
-* Are they previous customers who have made a purchase but not within the last 
-90 days?  [They come-over as re-engagers]
+* Are they Autoship?  [If yes some or all of their order goes into a Autoship bucket]
+* Are they 35 days out from ship date and have an email?  [If yes then they come over]
+* Are they previous customers who have made a purchase but not within the last 90 days?  [They come-over as re-engagers]
 
 Additional Notes
 ----------------
@@ -150,12 +149,7 @@ file every day, and so on and so forth.
 Can the application:
 
 * Pull the lists according to the spec?
-* After the initial week your application generates the first list (let's say 
-it is the FloraSource Time-To-ReOrder capturing the buyers who purchased FS 30 
-or 60 days ago), your app generates the list, we email those people, then it is 
-week two, we need a new list.  Will the app know to suppress those initial FS 
-buyers and give me new buyers who have not been pulled in the previous list? 
-It's like a water fall going into tiered buckets.
+* After the initial week your application generates the first list (let's say it is the FloraSource Time-To-ReOrder capturing the buyers who purchased FS 30 or 60 days ago), your app generates the list, we email those people, then it is week two, we need a new list.  Will the app know to suppress those initial FS buyers and give me new buyers who have not been pulled in the previous list? It's like a water fall going into tiered buckets.
  
 Bucket 1 spills into Bucket 2, Bucket 2 spills into Bucket 3 and so on....The 
 "spill" is the same initial pulled list moving into the different email 
