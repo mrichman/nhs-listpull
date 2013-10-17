@@ -9,7 +9,7 @@ from StringIO import StringIO
 from flask import request, render_template, flash, redirect, send_file
 
 from . import app, db, mom, sf
-from .models import Job, ListType
+from .models import Job, ListType, Product, Category
 
 
 @app.route('/')
@@ -22,8 +22,9 @@ def show_jobs():
         order_by(Job.id.desc()).\
         all()
     app.logger.debug("Found {} jobs".format(len(jobs)))
-    app.logger.debug("jobs: {}".format(jobs))
-    return render_template('jobs.html', jobs=jobs)
+    categories = db.session.query(Category).all()
+    products = db.session.query(Product).all()
+    return render_template('jobs.html', jobs=jobs, categories=categories, products=products)
 
 
 @app.route('/list', methods=['POST'])
