@@ -6,6 +6,7 @@ from listpull import db
 
 
 class Job(db.Model):
+
     """ SQLAlchemy Job Model """
     id = db.Column(db.Integer, primary_key=True)
     list_type_id = db.Column(db.Integer, db.ForeignKey('list_type.id'),
@@ -32,6 +33,7 @@ class Job(db.Model):
 
 
 class ListType(db.Model):
+
     """ SQLAlchemy ListType Model """
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True, nullable=False)
@@ -41,3 +43,47 @@ class ListType(db.Model):
 
     def __repr__(self):
         return '<ListType {}>'.format(self.name)
+
+""" Many-to-Many Relationships
+
+http://pythonhosted.org/Flask-SQLAlchemy/models.html
+
+If you want to use many-to-many relationships you will need to define a helper
+table that is used for the relationship. For this helper table it is strongly
+recommended to not use a model but an actual table:
+"""
+
+category_product = db.Table('category_product',
+                            db.Column('category_id',
+                                      db.Integer,
+                                      db.ForeignKey('category.id')),
+                            db.Column('product_id',
+                                      db.Integer,
+                                      db.ForeignKey('product.id')))
+
+
+class Product(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    sku = db.Column(db.String(10), unique=True, nullable=False)
+    name = db.Column(db.String(80), nullable=False)
+    categories = db.relationship('Category', secondary=category_product,
+                                 backref=db.backref('categories', lazy='dynamic'))
+
+    def __init__(self, name):
+        self.name = name
+
+    def __repr__(self):
+        return '<Product {}>'.format(self.name)
+
+
+class Category(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+    products = db.relationship('Product', secondary=category_product,
+                               backref=db.backref('products', lazy='dynamic'))
+
+    def __init__(self, name):
+        self.name = name
+
+    def __repr__(self):
+        return '<Category {}>'.format(self.name)
