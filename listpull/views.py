@@ -24,7 +24,8 @@ def show_jobs():
     app.logger.debug("Found {} jobs".format(len(jobs)))
     categories = db.session.query(Category).all()
     products = db.session.query(Product).all()
-    return render_template('jobs.html', jobs=jobs, categories=categories, products=products)
+    return render_template('jobs.html', jobs=jobs, categories=categories,
+                           products=products)
 
 
 @app.route('/list', methods=['POST'])
@@ -86,7 +87,9 @@ def create_list_reengagement():
 
 @app.route('/csv/<int:job_id>', methods=['GET'])
 def get_csv(job_id):
-    """ Action to retrieve the compressed CSV from the database """
+    """ Action to retrieve the compressed CSV from the database
+    :param job_id:
+    """
     job = db.session.query(Job).filter_by(id=job_id).first()
     if job.compressed_csv is None:
         flash("No data available.", "danger")
@@ -104,7 +107,9 @@ def get_csv(job_id):
 
 @app.route('/send/<int:job_id>', methods=['GET'])
 def send_to_smartfocus(job_id):
-    """ Sends raw CSV to SmartFocus """
+    """ Sends raw CSV to SmartFocus
+    :param job_id:
+    """
     job = db.session.query(Job).filter_by(id=job_id).first()
     if job.compressed_csv is None:
         flash("No data available.", "danger")
@@ -126,7 +131,9 @@ def send_to_smartfocus(job_id):
 
 @app.route('/delete/<int:job_id>', methods=['GET'])
 def delete_job(job_id):
-    """Delete a job"""
+    """Delete a job
+    :param job_id:
+    """
     try:
         job = db.session.query(Job).filter_by(id=job_id).first()
         db.session.delete(job)
@@ -139,7 +146,8 @@ def delete_job(job_id):
 
 @app.route('/list-as', methods=['POST'])
 def create_list_autoships():
-    """ Form post action to create a list """
+    """ Form post action to create a list
+    """
     app.logger.debug("create_list_autoships()")
     list_type_id = request.form['list_type_id']
     app.logger.debug("list_type_id=" + list_type_id)
@@ -161,13 +169,23 @@ def create_list_cat_x_sell():
     """ Form post action to create a list """
     app.logger.debug("create_list_cat_x_sell()")
     list_type_id = request.form['list_type_id']
-    category_list = request.form.getlist('category-list')
-    product_list = request.form.getlist('product-list')
+    category_id = request.form['category']
+    product_list = request.form.getlist('products')
     app.logger.debug("list_type_id=" + list_type_id)
-    app.logger.debug("category_list=" + ','.join(category_list))
+    app.logger.debug("category_id={}".format(category_id))
     app.logger.debug("product_list=" + ','.join(product_list))
+
+    #TODO get all products from selected category, then remove the ones from
+    # product_list. Send resultant set of product ids to sproc
+    products = Category.query.\
+        filter_by(id=category_id).\
+        first().\
+        products
+
+    app.logger.debug(products)
+
     app.logger.debug("mom.get_cat_x_sell()")
-    csv, count = mom.get_cat_x_sell()
+    csv, count = mom.get_cat_x_sell(product_list)
     app.logger.debug("CSV is {} bytes".format(len(csv)))
     csv = buffer(compress(csv))
     app.logger.debug("Compressed CSV is {} bytes".format(len(csv)))
@@ -181,11 +199,15 @@ def create_list_cat_x_sell():
 
 @app.errorhandler(404)
 def page_not_found(e):
-    """ Page Not Found """
+    """ Page Not Found
+    :param e:
+    """
     return render_template('templates/404.html', e=e), 404
 
 
 @app.errorhandler(500)
 def internal_error(e):
-    """ Internal Server Error """
+    """ Internal Server Error
+    :param e:
+    """
     return render_template('templates/500.html', e=e), 500
