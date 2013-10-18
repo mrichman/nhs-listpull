@@ -9,7 +9,7 @@ from StringIO import StringIO
 from flask import request, render_template, flash, redirect, send_file
 
 from . import app, db, mom, sf
-from .models import Job, ListType, Product, Category
+from .models import Job, ListType, Product, Category, category_product
 
 
 @app.route('/')
@@ -177,18 +177,20 @@ def create_list_cat_x_sell():
     app.logger.debug("create_list_cat_x_sell()")
     list_type_id = request.form['list_type_id']
     category_id = request.form['category']
-    product_list = request.form.getlist('products')
+    exclude_product_list = request.form.getlist('products')
     app.logger.debug("list_type_id=" + list_type_id)
     app.logger.debug("category_id={}".format(category_id))
-    app.logger.debug("product_list=" + ','.join(product_list))
-    products = Category.query.\
-        filter_by(id=category_id).\
-        first().\
-        products
-    products = products - product_list
+    app.logger.debug("product_list=" + ','.join(exclude_product_list))
+
+    products = [p.id for p in
+                db.session.query(Product.id).join(category_product).
+                filter(Category.id == category_id).
+                filter(~Product.id.in_(exclude_product_list)).
+                all()]
+
     app.logger.debug(products)
     app.logger.debug("mom.get_cat_x_sell()")
-    csv, count = mom.get_cat_x_sell(product_list)
+    csv, count = mom.get_cat_x_sell(products)
     app.logger.debug("CSV is {} bytes".format(len(csv)))
     csv = buffer(compress(csv))
     app.logger.debug("Compressed CSV is {} bytes".format(len(csv)))
