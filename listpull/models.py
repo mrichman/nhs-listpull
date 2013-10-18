@@ -60,7 +60,7 @@ class Product(db.Model):
     sku = db.Column(db.String(10), unique=True, nullable=False)
     name = db.Column(db.String(80), nullable=False)
     categories = db.relationship('Category', secondary=category_product,
-                                 backref=db.backref('categories',
+                                 backref=db.backref('products',
                                                     lazy='dynamic'))
 
     def __init__(self, name):
@@ -74,8 +74,8 @@ class Category(db.Model):
     """ SQLAlchemy Category Model """
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
-    products = db.relationship('Product', secondary=category_product,
-                               backref=db.backref('products', lazy='dynamic'))
+    # products = db.relationship('Product', secondary=category_product,
+    #                           backref=db.backref('categories', lazy='dynamic'))
 
     def __init__(self, name):
         self.name = name
