@@ -35,7 +35,12 @@ def create_list():
     list_type_id = request.form['list_type_id']
     app.logger.debug("list_type_id=" + list_type_id)
     app.logger.debug("mom.get_customers()")
-    csv, count = mom.get_customers()
+    try:
+        csv, count = mom.get_customers()
+    except Exception as e:
+        app.logger.error(e.message)
+        flash(e.message, 'danger')
+        return redirect('/')
     app.logger.debug("CSV is {} bytes".format(len(csv)))
     csv = compress(csv)
     app.logger.debug("Compressed CSV is {} bytes".format(len(csv)))
@@ -115,7 +120,7 @@ def send_to_smartfocus(job_id):
         flash("No data available.", "danger")
         return redirect('/')
     csv = decompress(job.compressed_csv)
-    app.logger.info("Sending {} bytes of raw CSV to SmartFocus".format(len(csv)))
+    app.logger.info("Sending {} bytes of CSV to SmartFocus".format(len(csv)))
     sf_job_id = sf.insert_upload(csv)
     if sf_job_id > 0:
         job = db.session.query(Job).filter_by(id=job_id).first()
@@ -166,7 +171,9 @@ def create_list_autoships():
 
 @app.route('/list-cat-x-sell', methods=['POST'])
 def create_list_cat_x_sell():
-    """ Form post action to create a list """
+    """ Get all products from selected category, then remove the ones from
+    product_list. Send resultant set of product ids to sproc to retrieve
+    customer list """
     app.logger.debug("create_list_cat_x_sell()")
     list_type_id = request.form['list_type_id']
     category_id = request.form['category']
@@ -174,16 +181,12 @@ def create_list_cat_x_sell():
     app.logger.debug("list_type_id=" + list_type_id)
     app.logger.debug("category_id={}".format(category_id))
     app.logger.debug("product_list=" + ','.join(product_list))
-
-    #TODO get all products from selected category, then remove the ones from
-    # product_list. Send resultant set of product ids to sproc
     products = Category.query.\
         filter_by(id=category_id).\
         first().\
         products
-
+    products = products - product_list
     app.logger.debug(products)
-
     app.logger.debug("mom.get_cat_x_sell()")
     csv, count = mom.get_cat_x_sell(product_list)
     app.logger.debug("CSV is {} bytes".format(len(csv)))
