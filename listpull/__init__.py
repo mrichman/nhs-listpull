@@ -11,17 +11,15 @@ from flask.ext.script import Manager
 from flask.ext.migrate import Migrate, MigrateCommand
 from mom.client import SQLClient
 from smartfocus.restclient import RESTClient
+from formatters import ColorFormatter
 
 app = Flask(__name__)
 app.config.from_object('config')
 
 logging.getLogger("").setLevel(logging.INFO)
-logging.getLogger("sqlalchemy.engine").setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(asctime)s (%(levelname)s) %(name)s: '
-                              '%(message)s',
-                              '%Y-%m-%d %H:%M:%S')
+logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
 consoleHandler = logging.StreamHandler()
-consoleHandler.setFormatter(formatter)
+consoleHandler.setFormatter(ColorFormatter())
 logging.getLogger("").addHandler(consoleHandler)
 
 db = SQLAlchemy(app)
