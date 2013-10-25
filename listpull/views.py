@@ -182,23 +182,29 @@ def create_list_cat_x_sell():
     app.logger.debug("category_id={}".format(category_id))
     app.logger.debug("product_list=" + ','.join(exclude_product_list))
 
-    products = [p.id for p in
-                db.session.query(Product.id).join(category_product).
+    products = [p.sku for p in
+                db.session.query(Product.sku).join(category_product).
                 filter(Category.id == category_id).
                 filter(~Product.id.in_(exclude_product_list)).
                 all()]
 
     app.logger.debug(products)
     app.logger.debug("mom.get_cat_x_sell()")
-    csv, count = mom.get_cat_x_sell(products)
-    app.logger.debug("CSV is {} bytes".format(len(csv)))
-    csv = buffer(compress(csv))
-    app.logger.debug("Compressed CSV is {} bytes".format(len(csv)))
-    job = Job(list_type_id=list_type_id, record_count=count, csv=csv)
-    db.session.add(job)
-    db.session.commit()
-    flash('List successfully generated with {:,} records'.format(count),
-          "success")
+    try:
+        csv, count = mom.get_cat_x_sell(products)
+        app.logger.debug("CSV is {} bytes".format(len(csv)))
+        if len(csv) == 0:
+            flash("No data found.", "warning")
+            return redirect('/')
+        csv = buffer(compress(csv))
+        app.logger.debug("Compressed CSV is {} bytes".format(len(csv)))
+        job = Job(list_type_id=list_type_id, record_count=count, csv=csv)
+        db.session.add(job)
+        db.session.commit()
+        flash('List successfully generated with {:,} records'.format(count),
+              "success")
+    except Exception as e:
+        flash("Something went horribly wrong. {}".format(e), "danger")
     return redirect('/')
 
 
