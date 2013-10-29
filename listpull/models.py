@@ -74,8 +74,6 @@ class Category(db.Model):
     """ SQLAlchemy Category Model """
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
-    # products = db.relationship('Product', secondary=category_product,
-    #                           backref=db.backref('categories', lazy='dynamic'))
 
     def __init__(self, name):
         self.name = name
