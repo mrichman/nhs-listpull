@@ -2,15 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="Email List Pull Application">
 <meta name="author" content="Mark A. Richman">
 <title>Email List Pull Application</title>
-<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
-<link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
-<link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="//code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
@@ -20,6 +19,8 @@
 <script src="{{ url_for('static', filename='js/html5shiv.js') }}"></script>
 <script src="{{ url_for('static', filename='js/respond.min.js') }}"></script>
 <![endif]-->
+<link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+<link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">
 </head>
 <body>
 
@@ -72,16 +73,47 @@
    </div>
 
   <div id="badges">
+
+    <a href="http://www.smartfocus.com/" target="_blank">
+      <img src="{{ url_for('static', filename='img/smartfocus.png') }}"
+           alt="SmartFocus"
+           title="SmartFocus enables businesses to deliver real-time, personalized marketing that drives revenue, loyalty, and satisfaction.">
+    </a>
+
     <a href="http://www.python.org" target="_blank">
-      <img src="http://www.python.org/community/logos/python-powered-w-100x40.png" alt="python powered" title="Python is a programming language that lets you work more quickly and integrate your systems more effectively. You can learn to use Python and see almost immediate gains in productivity and lower maintenance costs.">
+      <img src="http://www.python.org/community/logos/python-powered-w-70x28.png"
+           alt="python powered"
+           title="Python is a programming language that lets you work more quickly and integrate your systems more effectively">
     </a>
 
     <a href="http://flask.pocoo.org/" target="_blank">
-      <img src="http://flask.pocoo.org/static/badges/made-with-flask-s.png" alt="made with Flask" title="Flask is a microframework for Python based on Werkzeug, Jinja 2 and good intentions.">
+      <img src="http://flask.pocoo.org/static/badges/made-with-flask-s.png"
+           alt="made with Flask"
+           title="Flask is a microframework for Python based on Werkzeug, Jinja 2 and good intentions">
+    </a>
+
+    <a href="http://www.sqlalchemy.org/" target="_blank">
+      <img src="http://www.sqlalchemy.org/img/sqla-logo6.gif"
+           alt="SQLAlchemy"
+           title="SQLAlchemy is the Python SQL toolkit and Object Relational Mapper">
+    </a>
+
+    <a href="http://www.sqlite.org/" target="_blank">
+      <img src="{{ url_for('static', filename='img/sqlite.png') }}"
+           alt="SQLite"
+           title="SQLite is a software library that implements a self-contained, serverless, zero-configuration, transactional SQL database engine.">
+    </a>
+
+    <a href="http://jquery.com/" target="_blank">
+      <img src="{{ url_for('static', filename='img/jquery.png') }}"
+           alt="jQuery"
+           title="jQuery is a fast, small, and feature-rich JavaScript library">
     </a>
 
     <a href="http://www.w3.org/html/logo/" target="_blank">
-      <img src="http://www.w3.org/html/logo/badge/html5-badge-h-css3-device-performance-semantics.png" width="115" height="32" alt="HTML5 Powered with CSS3 / Styling, Device Access, Performance &amp; Integration, and Semantics" title="HTML5 Powered with CSS3 / Styling, Device Access, Performance &amp; Integration, and Semantics">
+      <img src="http://www.w3.org/html/logo/badge/html5-badge-h-css3-device-performance-semantics.png"
+           alt="HTML5 Powered with CSS3 / Styling, Device Access, Performance &amp; Integration, and Semantics"
+           title="HTML5 Powered with CSS3 / Styling, Device Access, Performance &amp; Integration, and Semantics">
     </a>
   </div>
 
