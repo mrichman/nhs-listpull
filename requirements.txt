@@ -5,13 +5,13 @@ Flask-Script==0.6.2
 Jinja2==2.7.1
 Mako==0.9.0
 MarkupSafe==0.18
-SQLAlchemy==0.8.2
+SQLAlchemy==0.8.3
 Werkzeug==0.9.4
 alembic==0.6.0
 itsdangerous==0.23
--e git+https://github.com/mrichman/mom.git@aafc399bb213349a7813b8ed059489f5c327b69d#egg=mom-master
+-e git+https://github.com/mrichman/mom.git#egg=mom-master
 poster==0.8.1
-pymssql==2.0.0b1-dev-20130403
+pymssql==2.0.1
 requests==2.0.0
--e git+https://github.com/mrichman/smartfocus.git@21af7290bf3951e433a3e566bd579cc2f1ffc0c3#egg=smartfocus-master
+-e git+https://github.com/mrichman/smartfocus.git#egg=smartfocus-master
 wsgiref==0.1.2
