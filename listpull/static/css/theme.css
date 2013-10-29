@@ -29,3 +29,7 @@ div.actions {
     text-decoration: none;
     margin-right: 10px;
 }
+
+#badges img {
+    height: 24px;
+}
