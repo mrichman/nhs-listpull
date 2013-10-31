@@ -21,7 +21,7 @@
       <td>{{ "{:,}".format(job.record_count) }}</td>
       <td>{% if job.status == 0 %}Pending{% else %}Complete{% endif %}</td>
       <td>{{ job.sf_job_id }}</td>
-      <td>{{ job.created_at }}</td>
+      <td>{{ job.created_at | datetimeformat }}</td>
       <td>
         <a class="btn btn-primary btn-xs" href="/csv/{{ job.id }}">
         Download CSV
