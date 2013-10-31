@@ -8,11 +8,13 @@ MarkupSafe==0.18
 SQLAlchemy==0.8.3
 Werkzeug==0.9.4
 alembic==0.6.0
+eventlet==0.14.0
+flake8==2.1.0
 gunicorn==18.0
 itsdangerous==0.23
 -e git+https://github.com/mrichman/mom.git#egg=mom-master
 poster==0.8.1
 pymssql==2.0.1
-requests==2.0.0
+requests==2.0.1
 -e git+https://github.com/mrichman/smartfocus.git#egg=smartfocus-master
 wsgiref==0.1.2
