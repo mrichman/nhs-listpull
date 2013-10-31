@@ -10,6 +10,7 @@ from flask import request, render_template, flash, redirect, send_file
 
 from . import app, db, mom, sf
 from .models import Job, ListType, Product, Category, category_product
+from utils import extract_emails_from_csv
 
 
 @app.route('/')
@@ -34,6 +35,10 @@ def create_list():
     app.logger.debug("create_list()")
     list_type_id = request.form['list_type_id']
     app.logger.debug("list_type_id=" + list_type_id)
+    include_prev_list = False
+    if 'include_prev_list' in request.form:  # absent when unchecked
+        app.logger.debug("include_prev_list=True")
+        include_prev_list = True
     app.logger.debug("mom.get_customers()")
     try:
         csv, count = mom.get_customers()
@@ -42,6 +47,8 @@ def create_list():
         flash(e.message, 'danger')
         return redirect('/')
     app.logger.debug("CSV is {} bytes".format(len(csv)))
+    if include_prev_list:
+        emails = extract_emails_from_csv(csv)
     csv = compress(csv)
     app.logger.debug("Compressed CSV is {} bytes".format(len(csv)))
     job = Job(list_type_id=list_type_id, record_count=count, csv=csv)
@@ -99,7 +106,7 @@ def get_csv(job_id):
     if job.compressed_csv is None:
         flash("No data available.", "danger")
         return redirect('/')
-    app.logger.info("CSV {}".format(job.compressed_csv))
+    # app.logger.info("CSV {}".format(job.compressed_csv))
     csv = decompress(job.compressed_csv)
     sio = StringIO()
     sio.write(csv)
@@ -213,7 +220,7 @@ def page_not_found(e):
     """ Page Not Found
     :param e:
     """
-    return render_template('templates/404.html', e=e), 404
+    return render_template('templates/404.html'), 404
 
 
 @app.errorhandler(500)
@@ -221,4 +228,9 @@ def internal_error(e):
     """ Internal Server Error
     :param e:
     """
-    return render_template('templates/500.html', e=e), 500
+    return render_template('templates/500.html'), 500
+
+
+@app.template_filter()
+def datetimeformat(datetime):
+    return datetime.strftime('%Y-%m-%d %H:%M:%S')
