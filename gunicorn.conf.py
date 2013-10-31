@@ -81,9 +81,9 @@ def get_workers():
         return 3
 
 workers = get_workers()
-#  worker_class = 'egg:gunicorn#gevent'
+worker_class = 'egg:gunicorn#eventlet'
 worker_connections = 1000
-timeout = 90
+timeout = 120
 keepalive = 5
 
 #
@@ -102,7 +102,7 @@ keepalive = 5
 #       True or False
 #
 
-debug = False
+debug = True
 spew = False
 
 #
