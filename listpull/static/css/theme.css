@@ -41,3 +41,11 @@ div.actions {
 #badges img {
     height: 24px;
 }
+
+.panel-body > ul > li {
+    font-size: 12px;
+}
+
+select, option, .instruction {
+    font-size: 12px;
+}
