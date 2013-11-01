@@ -73,6 +73,7 @@ backlog = 2048
 #       A positive integer. Generally set in the 1-5 seconds range.
 #
 
+
 def get_workers():
     procs = os.sysconf('SC_NPROCESSORS_ONLN')
     if procs > 0:
@@ -102,7 +103,7 @@ keepalive = 5
 #       True or False
 #
 
-debug = True
+debug = False
 spew = False
 
 #
@@ -163,9 +164,9 @@ tmp_upload_dir = None
 #       A string of "debug", "info", "warning", "error", "critical"
 #
 
-logfile = '-'
+logfile = 'gunicorn.log'
 loglevel = 'info'
-accesslog = '-'
+accesslog = 'gunicorn.access.log'
 
 #
 # Process naming
@@ -200,11 +201,19 @@ proc_name = None
 #       A callable that takes a server instance as the sole argument.
 #
 #
-# def post_fork(server, worker):
-#     pass
-#
-# def pre_fork(server, worker):
-#     pass
-#
-# def pre_exec(server):
-#     pass
+
+
+def post_fork(server, worker):
+    server.log.info("Worker spawned (pid: %s)", worker.pid)
+
+
+def pre_fork(server, worker):
+    pass
+
+
+def pre_exec(server):
+    server.log.info("Forked child, re-executing.")
+
+
+def when_ready(server):
+    server.log.info("Server is ready. Spwawning workers")
