@@ -9,13 +9,15 @@ from StringIO import StringIO
 from flask import request, render_template, flash, redirect, send_file
 
 from . import app, db, mom, sf
+from listpull import utils
 from .models import Job, ListType, Product, Category, category_product
-from utils import extract_emails_from_csv
 
 
 @app.route('/')
 def show_jobs():
-    """ Default Route """
+    """
+    Get all Jobs.
+    """
     app.logger.debug("show_jobs()")
     jobs = db.session.query(Job).\
         join(ListType).\
@@ -31,14 +33,12 @@ def show_jobs():
 
 @app.route('/list', methods=['POST'])
 def create_list():
-    """ Form post action to create a list """
+    """
+    Entire House File + Autoships.
+    """
     app.logger.debug("create_list()")
     list_type_id = request.form['list_type_id']
     app.logger.debug("list_type_id=" + list_type_id)
-    include_prev_list = False
-    if 'include_prev_list' in request.form:  # absent when unchecked
-        app.logger.debug("include_prev_list=True")
-        include_prev_list = True
     app.logger.debug("mom.get_customers()")
     try:
         csv, count = mom.get_customers()
@@ -47,21 +47,23 @@ def create_list():
         flash(e.message, 'danger')
         return redirect('/')
     app.logger.debug("CSV is {} bytes".format(len(csv)))
-    if include_prev_list:
-        emails = extract_emails_from_csv(csv)
+    if 'include_prev_list' in request.form:  # absent when unchecked
+        app.logger.debug("include_prev_list=True")
+        csv = utils.merge_previous_list(csv, list_type_id)
     csv = compress(csv)
     app.logger.debug("Compressed CSV is {} bytes".format(len(csv)))
     job = Job(list_type_id=list_type_id, record_count=count, csv=csv)
     db.session.add(job)
     db.session.commit()
-    flash('Generated list with {:,} records and {:,} bytes of compressed CSV'.
-          format(count, len(csv)), "success")
+    flash('Generated list with {:,} records'.format(count), "success")
     return redirect('/')
 
 
 @app.route('/list-noas', methods=['POST'])
 def create_list_no_autoship():
-    """ Form post action to create a list """
+    """
+    Entire House File (No Autoships).
+    """
     app.logger.debug("create_list_no_autoship()")
     list_type_id = request.form['list_type_id']
     app.logger.debug("list_type_id=" + list_type_id)
@@ -69,6 +71,9 @@ def create_list_no_autoship():
     csv, count = mom.get_customers_excl_autoship()
     app.logger.debug("CSV is {} bytes".format(len(csv)))
     csv = buffer(compress(csv))
+    if 'include_prev_list' in request.form:  # absent when unchecked
+        app.logger.debug("include_prev_list=True")
+        csv = utils.merge_previous_list(csv, list_type_id)
     app.logger.debug("Compressed CSV is {} bytes".format(len(csv)))
     job = Job(list_type_id=list_type_id, record_count=count, csv=csv)
     db.session.add(job)
@@ -80,13 +85,18 @@ def create_list_no_autoship():
 
 @app.route('/list-reengagement', methods=['POST'])
 def create_list_reengagement():
-    """ Form post action to create a list """
+    """
+    Re-engagement File (Non-Autoship Customers idle > 120 days).
+    """
     app.logger.debug("create_list_reengagement()")
     list_type_id = request.form['list_type_id']
     app.logger.debug("list_type_id=" + list_type_id)
     app.logger.debug("mom.get_customers_reengagement()")
     csv, count = mom.get_customers_reengagement()
     app.logger.debug("CSV is {} bytes".format(len(csv)))
+    if 'include_prev_list' in request.form:  # absent when unchecked
+        app.logger.debug("include_prev_list=True")
+        csv = utils.merge_previous_list(csv, list_type_id)
     csv = buffer(compress(csv))
     app.logger.debug("Compressed CSV is {} bytes".format(len(csv)))
     job = Job(list_type_id=list_type_id, record_count=count, csv=csv)
@@ -99,8 +109,9 @@ def create_list_reengagement():
 
 @app.route('/csv/<int:job_id>', methods=['GET'])
 def get_csv(job_id):
-    """ Action to retrieve the compressed CSV from the database
-    :param job_id:
+    """
+    Action to retrieve the compressed CSV from the database.
+    :param job_id: int
     """
     job = db.session.query(Job).filter_by(id=job_id).first()
     if job.compressed_csv is None:
@@ -119,8 +130,9 @@ def get_csv(job_id):
 
 @app.route('/send/<int:job_id>', methods=['GET'])
 def send_to_smartfocus(job_id):
-    """ Sends raw CSV to SmartFocus
-    :param job_id:
+    """
+    Sends raw CSV to SmartFocus.
+    :param job_id: int
     """
     job = db.session.query(Job).filter_by(id=job_id).first()
     if job.compressed_csv is None:
@@ -143,8 +155,9 @@ def send_to_smartfocus(job_id):
 
 @app.route('/delete/<int:job_id>', methods=['GET'])
 def delete_job(job_id):
-    """Delete a job
-    :param job_id:
+    """
+    Delete a job.
+    :param job_id: int
     """
     try:
         job = db.session.query(Job).filter_by(id=job_id).first()
@@ -158,7 +171,8 @@ def delete_job(job_id):
 
 @app.route('/list-as', methods=['POST'])
 def create_list_autoships():
-    """ Form post action to create a list
+    """
+    Autoship Customers Only.
     """
     app.logger.debug("create_list_autoships()")
     list_type_id = request.form['list_type_id']
@@ -166,6 +180,9 @@ def create_list_autoships():
     app.logger.debug("mom.get_autoships()")
     csv, count = mom.get_autoships()
     app.logger.debug("CSV is {} bytes".format(len(csv)))
+    if 'include_prev_list' in request.form:  # absent when unchecked
+        app.logger.debug("include_prev_list=True")
+        csv = utils.merge_previous_list(csv, list_type_id)
     csv = buffer(compress(csv))
     app.logger.debug("Compressed CSV is {} bytes".format(len(csv)))
     job = Job(list_type_id=list_type_id, record_count=count, csv=csv)
@@ -178,9 +195,12 @@ def create_list_autoships():
 
 @app.route('/list-cat-x-sell', methods=['POST'])
 def create_list_cat_x_sell():
-    """ Get all products from selected category, then remove the ones from
+    """
+    Category Cross-Sell Emails.
+    Get all products from selected category, then remove the ones from
     product_list. Send resultant set of product ids to sproc to retrieve
-    customer list """
+    customer list
+    """
     app.logger.debug("create_list_cat_x_sell()")
     list_type_id = request.form['list_type_id']
     category_id = request.form['category']
@@ -203,6 +223,9 @@ def create_list_cat_x_sell():
         if len(csv) == 0:
             flash("No data found.", "warning")
             return redirect('/')
+        if 'include_prev_list' in request.form:  # absent when unchecked
+            app.logger.debug("include_prev_list=True")
+            csv = utils.merge_previous_list(csv, list_type_id)
         csv = buffer(compress(csv))
         app.logger.debug("Compressed CSV is {} bytes".format(len(csv)))
         job = Job(list_type_id=list_type_id, record_count=count, csv=csv)
@@ -217,7 +240,8 @@ def create_list_cat_x_sell():
 
 @app.errorhandler(404)
 def page_not_found(e):
-    """ Page Not Found
+    """
+    Page Not Found.
     :param e:
     """
     return render_template('templates/404.html'), 404
@@ -225,7 +249,8 @@ def page_not_found(e):
 
 @app.errorhandler(500)
 def internal_error(e):
-    """ Internal Server Error
+    """
+    Internal Server Error.
     :param e:
     """
     return render_template('templates/500.html'), 500
@@ -233,4 +258,7 @@ def internal_error(e):
 
 @app.template_filter()
 def datetimeformat(datetime):
+    """
+    Template filter for datetime.
+    """
     return datetime.strftime('%Y-%m-%d %H:%M:%S')

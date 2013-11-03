@@ -32,6 +32,14 @@ class Job(db.Model):
     def __repr__(self):
         return '<Job {}>'.format(self.id)
 
+    @staticmethod
+    def previous_by_list_type_id(list_type_id):
+        job = db.session.query(Job).\
+            order_by(Job.id.desc()).\
+            filter_by(list_type_id=list_type_id).\
+            first()
+        return job
+
 
 class ListType(db.Model):
     """ SQLAlchemy ListType Model """

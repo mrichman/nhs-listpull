@@ -121,9 +121,10 @@ Program Logic
 So basically this program needs to keep track of what it has sent over to Email 
 Vision so we don't do duplication.
 
-If in Example 1, John Doe’s email is sent to Email Vision via the API, on August
-6<sup>th</sup>.  On August 7<sup>th</sup> John Doe would not have his name resent to the
-Email Vision platform.  Nor would it August 8<sup>th</sup>, 9<sup>th</sup>, 10<sup>th</sup>, etc… 
+If in Example 1, John Doe’s email is sent to Email Vision via the API, on
+August 6<sup>th</sup>.  On August 7<sup>th</sup> John Doe would not have his
+name resent to the Email Vision platform.  Nor would it August 8<sup>th</sup>,
+9<sup>th</sup>, 10<sup>th</sup>, etc… 
 
 John Doe would only get re-inserted back into the program if he makes a new 
 purchase (and same timing criteria would apply).
@@ -134,9 +135,12 @@ campaigns to non-responders based on timing and purchasing rules.  So the
 initial goal here is to do the baton pass-off of qualifying a customer by 
 knowing:
 
-* Are they Autoship?  [If yes some or all of their order goes into a Autoship bucket]
-* Are they 35 days out from ship date and have an email?  [If yes then they come over]
-* Are they previous customers who have made a purchase but not within the last 90 days?  [They come-over as re-engagers]
+* Are they Autoship?  [If yes some or all of their order goes into a Autoship
+bucket]
+* Are they 35 days out from ship date and have an email?  [If yes then they
+come over]
+* Are they previous customers who have made a purchase but not within the last
+90 days?  [They come-over as re-engagers]
 
 Additional Notes
 ----------------
@@ -149,7 +153,12 @@ file every day, and so on and so forth.
 Can the application:
 
 * Pull the lists according to the spec?
-* After the initial week your application generates the first list (let's say it is the FloraSource Time-To-ReOrder capturing the buyers who purchased FS 30 or 60 days ago), your app generates the list, we email those people, then it is week two, we need a new list.  Will the app know to suppress those initial FS buyers and give me new buyers who have not been pulled in the previous list? It's like a water fall going into tiered buckets.
+* After the initial week your application generates the first list (let's say
+it is the FloraSource Time-To-ReOrder capturing the buyers who purchased FS 30
+or 60 days ago), your app generates the list, we email those people, then it is
+week two, we need a new list.  Will the app know to suppress those initial FS
+buyers and give me new buyers who have not been pulled in the previous list?
+It's like a water fall going into tiered buckets.
  
 Bucket 1 spills into Bucket 2, Bucket 2 spills into Bucket 3 and so on....The 
 "spill" is the same initial pulled list moving into the different email 

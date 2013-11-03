@@ -7,6 +7,7 @@
           <h3 class="panel-title">Category Cross-Sell Emails</h3>
         </div>
         <div class="panel-body">
+          <span class="instruction">Apply the following ruleset:</span>
           <ul>
             <li>Has the customer ordered in last 48 hours?  [If yes they qualify]</li>
             <li>What is the product they ordered?</li>
@@ -20,9 +21,9 @@
           <hr>
           <div style="margin-top: 10px;float:left">
             <p>
-              Category to Select:
+              Select a Category:
             </p>
-            <select id="category-list" name="category" size="28">
+            <select id="category-list" name="category" size="20">
               {% for c in categories %}
                 <option value="{{ c.id }}">{{ c.name }}</option>
               {% endfor %}
@@ -37,13 +38,13 @@
             <p>
               Product Emails to Suppress from Category:
             </p>
-            <select id="product-list" name="products" multiple="multiple" size="28">
+            <select id="product-list" name="products" multiple="multiple" size="20">
               {% for p in products %}
                 <option value="{{ p.id }}">{{ p.sku }} - {{ p.name }}</option>
               {% endfor %}
             </select>
-            <p class="text-muted" style="display:block;clear:both;margin-top:10px">
-              To select multiple products: CTRL+Click (Windows), &#8984;+Click (Mac)
+            <p class="text-muted" style="display:block;clear:both;margin-top:10px;font-size:12px">
+              Select multiple products: CTRL+Click (Windows), &#8984;+Click (Mac)
             </p>
           </div>
         </div>
@@ -55,7 +56,7 @@
     <div class="actions">
         <input type="hidden" name="list_type_id" value="5">
         <button type="submit" class="btn btn-default generate">Generate List</button>
-        <input type="checkbox" name="include_prev_list" value="{{ true }}">&nbsp;Include previous list in results
+        <input type="checkbox" name="include_prev_list" value="{{ true }}">&nbsp;Merge previous list with results
     </div>
     <!-- /Actions -->
 

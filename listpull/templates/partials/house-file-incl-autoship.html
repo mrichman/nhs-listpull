@@ -6,6 +6,7 @@
       <h3 class="panel-title">Entire House File (incl. Autoship Customers)</h3>
     </div>
     <div class="panel-body">
+      <span class="instruction">Apply the following ruleset:</span>
       <ul>
         <li>Includes Autoship customers</li>
         <li>Excludes do-not-email customers</li>
@@ -20,7 +21,7 @@
   <form action="{{ url_for('create_list') }}" method=post>
     <input type="hidden" name="list_type_id" value="1">
     <button type="submit" class="btn btn-default generate">Generate List</button>
-    <input type="checkbox" name="include_prev_list" value="{{ true }}">&nbsp;Include previous list in results
+    <!--<input type="checkbox" name="include_prev_list" value="{{ true }}">&nbsp;Merge previous list with results-->
   </form>
 </div>
 <!-- /Actions -->
