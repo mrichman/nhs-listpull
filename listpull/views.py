@@ -139,8 +139,9 @@ def send_to_smartfocus(job_id):
         flash("No data available.", "danger")
         return redirect('/')
     csv = decompress(job.compressed_csv)
+    column_mapping = utils.get_column_mapping(job.list_type_id)
     app.logger.info("Sending {} bytes of CSV to SmartFocus".format(len(csv)))
-    sf_job_id = sf.insert_upload(csv)
+    sf_job_id = sf.insert_upload(csv, column_mapping)
     if sf_job_id > 0:
         job = db.session.query(Job).filter_by(id=job_id).first()
         job.sf_job_id = sf_job_id

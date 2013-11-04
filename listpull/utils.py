@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import os
 
 from StringIO import StringIO
 from io import BytesIO
@@ -80,3 +79,53 @@ def merge_previous_list(csv_data, list_type_id):
         new_sio.write(row)
     csv = new_sio.getvalue()
     return csv
+
+
+def get_column_mapping(list_type_id=None):
+    """
+    Returns the column mapping dict for posting a CSV list to SmartFocus' API.
+
+    Args:
+        list_type_id: Type of list
+    Returns:
+        Dict of ordered column mappings
+    Raises:
+        Exception
+    """
+    mappings = [
+        {"1": "EMAIL",  # Default
+         "2": "CUSTNUM",
+         "3": "FIRSTNAME",
+         "4": "LASTNAME"},
+        {"1": "EMAIL",  # Entire House File + Autoship
+         "2": "CUSTNUM",
+         "3": "FIRSTNAME",
+         "4": "LASTNAME"},
+        {"1": "EMAIL",  # Entire House File - Autoship
+         "2": "CUSTNUM",
+         "3": "FIRSTNAME",
+         "4": "LASTNAME"},
+        {"1": "EMAIL",  # Re-engagement Files
+         "2": "CUSTNUM",
+         "3": "FIRSTNAME",
+         "4": "LASTNAME"},
+        {"1": "EMAIL",  # Autoship Only
+         "2": "CUSTNUM",
+         "3": "FIRSTNAME",
+         "4": "LASTNAME"},
+        {"1": "EMAIL",  # Category Cross-Sell
+         "2": "CUSTNUM",
+         "3": "FIRSTNAME",
+         "4": "LASTNAME",
+         "5": "LISTNAME"},
+        {"1": "EMAIL",  # By Product Purchased (time to reorder)
+         "2": "CUSTNUM",
+         "3": "FIRSTNAME",
+         "4": "LASTNAME",
+         "5": "LISTNAME"}
+    ]
+
+    if list_type_id is None:
+        return mappings[0]
+    else:
+        return mappings[list_type_id]
