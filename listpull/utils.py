@@ -108,7 +108,8 @@ def get_column_mapping(list_type_id=None):
         {"1": "EMAIL",  # Re-engagement Files
          "2": "CUSTNUM",
          "3": "FIRSTNAME",
-         "4": "LASTNAME"},
+         "4": "LASTNAME",
+         "5": "ACTIVE"},
         {"1": "EMAIL",  # Autoship Only
          "2": "CUSTNUM",
          "3": "FIRSTNAME",
