@@ -20,11 +20,16 @@
       <td>{{ job.list_type.name }}</td>
       <td>{{ "{:,}".format(job.record_count) }}</td>
       <td>{% if job.status == 0 %}Pending{% else %}Complete{% endif %}</td>
-      <td>{{ job.sf_job_id }}</td>
+      <td>
+      {% if job.sf_job_id != 0 %}
+      <a href="https://p3ccc.campaigncommander.com/menu/index.html#memberImport" target="_blank">{{ job.sf_job_id }}</a>
+      {% else %}&nbsp;
+      {% endif %}
+      </td>
       <td>{{ job.created_at | datetimeformat }}</td>
       <td>
         <a class="btn btn-primary btn-xs" href="/csv/{{ job.id }}">
-        Download CSV
+        Download
         </a>
         <a class="btn btn-primary btn-xs send-to-ev" href="/send/{{ job.id }}">
         Send to SmartFocus
